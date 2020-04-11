@@ -1,28 +1,23 @@
 package primo;
 
-public class EspressioneComposta extends Espressione{
-	Espressione e1;
-	Espressione e2;
-	private String valore;
+import primo.Espressione.Tipo;
 
-	public EspressioneComposta(Espressione e1,Espressione e2) throws TipiIncopatibiliException{
-		super(e1.tipo);
-		if(e1.tipo!=e2.tipo) throw new TipiIncopatibiliException();
-		this.e1 = e1;
-		this.e2 = e2;
-		somma();
-	}
-	private void somma() {
-		valore = switch(tipo) {
-		case INTERO-> ""+((int)e1.getValore()+(int)e2.getValore());
-		case BOOLEANO-> ""+((boolean)e1.getValore() || (boolean)e2.getValore());
-		case STRINGA-> (String)e1.getValore() +(String)e2.getValore();
-		};
-	}
-	@Override
-	Object getValore() {
-		
-		return valore;
-	}
+abstract public class EspressioneComposta extends Espressione{
+	protected Espressione[] espressione;
 
+	public EspressioneComposta(Espressione... e1) throws TipiIncopatibiliException{
+		super(e1[0].tipo);
+		espressione = e1;
+		if(!sonoDelloStessoTipo()) throw new TipiIncopatibiliException();
+	}
+	private boolean sonoDelloStessoTipo() {
+		Tipo tipo = espressione[0].tipo;
+		for(int i = 1;i<espressione.length;i++) {
+			if(tipo!=espressione[i].getTipo()) return false;
+		}
+		return true;
+	}
+	public Espressione[] getEspressione() {
+		return this.espressione;
+	}
 }
