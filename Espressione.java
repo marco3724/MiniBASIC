@@ -1,4 +1,5 @@
 package primo;
+import java.lang.NumberFormatException;
 
 abstract public class Espressione {
 	protected Tipo tipo;
@@ -6,16 +7,24 @@ abstract public class Espressione {
 		INTERO,STRINGA,BOOLEANO;
 	}
 	
-	public Espressione(String valore) {
-		if(valore.charAt(0)=='"' && valore.charAt(valore.length()-1)=='"') {
-			this.tipo = Tipo.STRINGA;	
-		}
-		else if(valore=="true" || valore =="false") {
+	public Espressione(Tipo tipo) {
+		this.tipo = tipo;
+	}
+	
+	public Espressione(String valore)  {
+
+		if(valore.equals("true") || valore.equals("false")) 
 			this.tipo = Tipo.BOOLEANO;	
+		
+		else if(true) { 
+			try {
+				Integer.parseInt(valore);
+				this.tipo = Tipo.INTERO;	
+			}
+			catch(NumberFormatException e){this.tipo = Tipo.STRINGA;}
 		}
-		else {
-		this.tipo = Tipo.INTERO;	
-		}
+		
+		
 	}
 	
 	public Tipo getTipo() {return tipo;}
