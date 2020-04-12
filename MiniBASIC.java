@@ -19,6 +19,7 @@ public class MiniBASIC {
 	//EspressioneConfronto c7 = new EspressioneConfronto(new Costante("CIAO"), new Costante("ciao"), Operatore.MAGGIORE_UGUALE);
 	//EspressioneConfronto c8 = new EspressioneConfronto(new Costante("C"), new Costante("C"), Operatore.MAGGIORE_UGUALE);
 	EspressioneConfronto c8 = new EspressioneConfronto(new Costante("C"), new Costante("C"), Operatore.UGUALE);
+	EspressioneSomma c9 = new EspressioneSomma(new Costante(false),new Costante(true),new Costante(true));
 	System.out.println(c.getValore());
 	System.out.println(c2.getValore());
 	System.out.println(c3.getValore());
@@ -27,6 +28,8 @@ public class MiniBASIC {
 	//System.out.println(c6.getValore());
 	//System.out.println(c7.getValore());
 	System.out.println(c8.getValore());
+	System.out.println(c2.getTipo());
+	System.out.println(c9.getTipo());
 	}
 	catch(TipiIncopatibiliException e) {System.out.print(e);}
 	}

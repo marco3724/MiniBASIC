@@ -1,22 +1,48 @@
 package primo;
 
 import primo.Espressione.Tipo;
-
+/**
+ * superclasse di EspressioneConfronto e EspressioneSomma 
+ * @author uni
+ *
+ */
 abstract public class EspressioneComposta extends Espressione{
-	protected Espressione[] espressione;
-
+	/**
+	 * array di espressioni che compongono l'espressione
+	 */
+	private Espressione[] espressione;
+	/**
+	 * viene assegnato il tipo tramite la sua superclasse
+	 * i valori tramite il parametro
+	 * @param e1 valori che compongono l'espressione
+	 * @throws TipiIncopatibiliException devono essre tutti dello stesso tipo,altrimenti viene lanciato un errore
+	 */
 	public EspressioneComposta(Espressione... e1) throws TipiIncopatibiliException{
-		super(e1[0].tipo);
+		super(e1[0].getTipo());
+		if(!sonoDelloStessoTipo(e1)) throw new TipiIncopatibiliException();
 		espressione = e1;
-		if(!sonoDelloStessoTipo()) throw new TipiIncopatibiliException();
 	}
-	private boolean sonoDelloStessoTipo() {
-		Tipo tipo = espressione[0].tipo;
-		for(int i = 1;i<espressione.length;i++) {
-			if(tipo!=espressione[i].getTipo()) return false;
+	public EspressioneComposta(Tipo tipo,Espressione... e1) throws TipiIncopatibiliException{
+		super(tipo);
+		if(!sonoDelloStessoTipo(e1)) throw new TipiIncopatibiliException();
+		espressione = e1;
+	}
+	
+	/**
+	 * 
+	 * @return un booleano che indica se sono dello stesso tipo
+	 */
+	private boolean sonoDelloStessoTipo(Espressione... e1) {
+		Tipo tipo = e1[0].getTipo();
+		for(int i = 1;i<e1.length;i++) {
+			if(tipo!=e1[i].getTipo()) return false;
 		}
 		return true;
 	}
+	/**
+	 * 
+	 * @return restituisce l'espressione composta
+	 */
 	public Espressione[] getEspressione() {
 		return this.espressione;
 	}
