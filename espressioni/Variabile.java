@@ -1,6 +1,6 @@
-package primo;
+package espressioni;
 
-import primo.Espressione.Tipo;
+import espressioni.Espressione.Tipo;
 /**
  * Classe variabile serve a creare un oggetto di tipo variabile che avrà un valore e in base al tipo di valore gli verrà assegnato il tipo
  * il valore potrà essere cambiato in futuro
@@ -25,7 +25,7 @@ public class Variabile extends Espressione {
 	 * @author marco
 	 *
 	 */
-	enum Nome{
+	public enum Nome{
 		$0,$1,$2,$3,$4,$5,$6,$7,$8,$9
 	}
 	/**
@@ -54,16 +54,16 @@ public class Variabile extends Espressione {
 	 * assegna un nuovo valore alla variabile
 	 * @param valore è il nuovo valore della variabile che però deve essere compatibile con la vecchia variabile
 	 */
-	public void setValore(String valore) throws TipiIncopatibiliException{
-		if(this.getTipo()!=super.returnTipo(valore)) throw new TipiIncopatibiliException();
+	public void setValore(String valore) throws TipiIncopamtibiliException{
+		if(this.getTipo()!=super.returnTipo(valore)) throw new TipiIncopamtibiliException();
 		this.valore = valore;
 		
 	}
-	public void setValore(int valore) throws TipiIncopatibiliException {
+	public void setValore(int valore) throws TipiIncopamtibiliException {
 		setValore(""+valore);
 		
 	}
-	public void setValore(boolean valore) throws TipiIncopatibiliException{
+	public void setValore(boolean valore) throws TipiIncopamtibiliException{
 		setValore(""+valore);
 	}
 	/**

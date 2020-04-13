@@ -1,4 +1,4 @@
-package primo;
+package espressioni;
 import java.lang.NumberFormatException;
 /**
  * superclasse di variabile,costante,espressione composta
@@ -59,7 +59,7 @@ abstract public class Espressione {
 	 * @return il tipo dell'oggetto
 	 */
 	public Tipo getTipo() {return tipo;}
-	abstract Object getValore();
+	public abstract Object getValore();
 	
 
 }

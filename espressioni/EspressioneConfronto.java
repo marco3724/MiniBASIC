@@ -1,4 +1,4 @@
-package primo;
+package espressioni;
 /**
  * questa classe serve a un oggetto che cotiene il confronto fra due espressioni
  * @author marco
@@ -20,7 +20,7 @@ public class EspressioneConfronto extends EspressioneComposta {
 	 * @author marco
 	 *
 	 */
-	enum Operatore{
+	public enum Operatore{
 		UGUALE,MAGGIORE_UGUALE,MINORE_UGUALE,MAGGIORE,MINORE,DIVERSO;
 	}
 	/**
@@ -28,9 +28,9 @@ public class EspressioneConfronto extends EspressioneComposta {
 	 * @param e1 prima espressione da confrontare
 	 * @param e2 seconda espressione da confrontare
 	 * @param op operatore usato per il confronto
-	 * @throws TipiIncopatibiliException se non sono dello stesso tipo ,viene lanciato un errore
+	 * @throws TipiIncopamtibiliException se non sono dello stesso tipo ,viene lanciato un errore
 	 */
-	public EspressioneConfronto(Espressione e1,Espressione e2,Operatore op) throws TipiIncopatibiliException {
+	public EspressioneConfronto(Espressione e1,Espressione e2,Operatore op) throws TipiIncopamtibiliException {
 		super(Tipo.BOOLEANO,e1,e2);
 		this.op = op;
 		valore = Confronto();

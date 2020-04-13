@@ -1,6 +1,6 @@
-package primo;
+package espressioni;
 
-import primo.Espressione.Tipo;
+import espressioni.Espressione.Tipo;
 /**
  * superclasse di EspressioneConfronto e EspressioneSomma 
  * @author uni
@@ -15,16 +15,16 @@ abstract public class EspressioneComposta extends Espressione{
 	 * viene assegnato il tipo tramite la sua superclasse
 	 * i valori tramite il parametro
 	 * @param e1 valori che compongono l'espressione
-	 * @throws TipiIncopatibiliException devono essre tutti dello stesso tipo,altrimenti viene lanciato un errore
+	 * @throws TipiIncopamtibiliException devono essre tutti dello stesso tipo,altrimenti viene lanciato un errore
 	 */
-	public EspressioneComposta(Espressione... e1) throws TipiIncopatibiliException{
+	public EspressioneComposta(Espressione... e1) throws TipiIncopamtibiliException{
 		super(e1[0].getTipo());
-		if(!sonoDelloStessoTipo(e1)) throw new TipiIncopatibiliException();
+		if(!sonoDelloStessoTipo(e1)) throw new TipiIncopamtibiliException();
 		espressione = e1;
 	}
-	public EspressioneComposta(Tipo tipo,Espressione... e1) throws TipiIncopatibiliException{
+	public EspressioneComposta(Tipo tipo,Espressione... e1) throws TipiIncopamtibiliException{
 		super(tipo);
-		if(!sonoDelloStessoTipo(e1)) throw new TipiIncopatibiliException();
+		if(!sonoDelloStessoTipo(e1)) throw new TipiIncopamtibiliException();
 		espressione = e1;
 	}
 	

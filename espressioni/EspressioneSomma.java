@@ -1,6 +1,6 @@
-package primo;
+package espressioni;
 
-import primo.Espressione.Tipo;
+import espressioni.Espressione.Tipo;
 /**
  * classe dedicata alla somma di espressioni
  * @author marco
@@ -14,9 +14,9 @@ public class EspressioneSomma extends EspressioneComposta{
 	/**
 	 * dopo aver create l'espressione col super costruttore li sommo/concateno
 	 * @param espressione insieme di espressioni da sommare
-	 * @throws TipiIncopatibiliException se non sono tutti dello stesso tipo viene lanciato un errore
+	 * @throws TipiIncopamtibiliException se non sono tutti dello stesso tipo viene lanciato un errore
 	 */
-	public EspressioneSomma(Espressione... espressione) throws TipiIncopatibiliException {
+	public EspressioneSomma(Espressione... espressione) throws TipiIncopamtibiliException {
 		super(espressione);
 		somma();
 	}
