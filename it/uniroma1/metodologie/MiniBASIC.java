@@ -49,16 +49,16 @@ public class MiniBASIC {
 	new Print(v2).esegui();
 	//Programma p = Programma.fromFile("Desktop");
 	Programma p1 = Programma.fromFile("C:\\\\Users\\\\uni\\\\Desktop\\\\prova.txt");
-	p1.istruzioni[0].esegui();//FUNGE
+	//p1.istruzioni.get(0).esegui();//FUNGE
 	//Programma p = new Programma(new Assegna(v2,"ca"),new Print(v2),new Print(v2),new Print(v2));
 	 Print[] a = {new Print("no"),new Print("nono")};
 	Programma p=  Programma.of(new Selezione(new EspressioneConfronto(v2,new Intero(3),Operatore.UGUALE) ,a,new Print("non ciao"),new Print("non ciao")));
-	for(Istruzione i: p) {
+	for(Istruzione i: p1) {
 		i.esegui();
 	}
 	//Programma.of("C:\\Users\\uni\\Desktop\\workspace_java\\HomeWork\\src\\ciao.txt");
-	for(int i = 0;i<p.istruzioni.length;i++) {
-		p.istruzioni[i].esegui();
+	for(int i = 0;i<p.istruzioni.size();i++) {
+		p.istruzioni.get(i).esegui();
 	}
 	}
 	catch(TipiIncopamtibiliException e) {System.out.print(e);}

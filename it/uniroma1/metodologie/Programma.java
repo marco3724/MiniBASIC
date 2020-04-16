@@ -24,44 +24,44 @@ import istruzioni.*;
 import espressioni.Tipo;
 
 public class Programma implements Iterable<Istruzione> {
-	public Istruzione[] istruzioni;
-	static Variabile[] variabili;
+	public ArrayList<Istruzione> istruzioni;
+	static Variabile[] variabili; // il massimo delle variabili sara uguale al numero e la loro posizione è dopo il $
 	String[] argomenti;
 	Termine terminato ;
 	
 	public Programma(Istruzione... istruzioni) {
+		this.istruzioni = new ArrayList<Istruzione>();
+		
+		for(Istruzione i: istruzioni) 
+			this.istruzioni.add(i);
+		this.variabili = new Variabile[Variabile.getMaxVariabili()];
+	}
+	
+	public Programma(ArrayList<Istruzione> istruzioni) {
 		this.istruzioni = istruzioni;
 		this.variabili = new Variabile[Variabile.getMaxVariabili()];
 	}
 	
 	public static Programma of(Istruzione... istruzioni) {
-		ArrayList<Istruzione> ist2 = new ArrayList<Istruzione>();
-		for(Istruzione ist : istruzioni) {
-			ist2.add(ist);
-		}
 		return new Programma(istruzioni);
 	}
 	static public Programma fromFile(String f) throws NumberFormatException, OperatoreNonTrovatoException, TipiIncopamtibiliException { // SICURAMENTE STATIC
 		String riga ;
 		ArrayList<Istruzione> ist = new ArrayList<Istruzione>();
-		Istruzione[] is = null ;
+		
 		try (BufferedReader b =Files.newBufferedReader(Paths.get(f))){
 			while(b.ready()) {
 				riga = b.readLine();
 				ist.add(parse(riga));//SISTAMA
 			}
-			is = new Istruzione[ist.size()];
-			int i = 0;
-			for(Istruzione ist2 : ist) {//SISTEMA 
-				is[i++]= ist2;
-			}
+
 			
 		}
 		
 		catch(IOException e) {
 			System.out.println(e);
 		}
-		return new Programma(is);
+		return new Programma(ist);
 		}
 	
 	
@@ -75,38 +75,50 @@ public class Programma implements Iterable<Istruzione> {
 				return new Print(Costante.of(argomento));
 			case "REM": return new Commento(argomento);
 			case "IF": 
-				String[] selezione =riga.split("ELSE",2);
-				if(selezione.length==1) {// non ha else
-					String[] ifThen =selezione[0].split("THEN",2);
-					//String[] espressione = selezione[0].substring(3).split(" ");// argometnto escludo if e spazi da 3incluso , lunghezza array 3 (arg op arg istr)
-					//EspressioneConfronto.Operatore.getOperatore(espressione[1]);//operatore
-					String[] confronto = ifThen[0].substring(3).split(" ");// il confronto
-					String[] istruzioniThen = ifThen[1].split(":");
-					Istruzione ist = null;
-					EspressioneConfronto.Operatore.getOperatore(confronto[1]);//operatore
-					if(confronto[0].startsWith("$")) {
-						if(confronto[2].startsWith("$")) { 
-							EspressioneConfronto e = new EspressioneConfronto(variabili[Integer.parseInt(""+confronto[0].charAt(1))],variabili[Integer.parseInt(""+confronto[2].charAt(1))],EspressioneConfronto.Operatore.getOperatore(confronto[1]));
-							for(int i = 0;i<istruzioniThen.length;i++) {
-								ist = parse(istruzioniThen[i]);//RICORSIONE
-							}
-							//return new Selezione(e,ist,null);//istruzione senza then
-						}
-					}
-					return new Print(Costante.of(argomento));
-
+				String[] selezione =riga.split("ELSE",2);//if...else....
+				String[] ifThen =selezione[0].split("THEN",2);//if...then...
+				String[] confronto = ifThen[0].substring(3).split(" ");// il confronto if(...)
+				String[] istruzioniThen = ifThen[1].split(":");//then.... formsto testo-da convertire
+				Istruzione[] istThen = new Istruzione[istruzioniThen.length];//lista di istruzioni del Then
+				EspressioneConfronto.Operatore.getOperatore(confronto[1]);//operatore (><=..)
+				EspressioneConfronto e; // l'espressione di confronto if(e)
+				for(int i = 0;i<istruzioniThen.length;i++) {
+					istThen[i]=parse(istruzioniThen[i]);//RICORSIONE  per prendere tutte le istruzioni - no entrare qua dentro durante la ricorsione
 				}
+				// espressione confronto
+				if(confronto[0].startsWith("$")) {//se è una variabile
+					if(confronto[2].startsWith("$")) { //se anche il scondo è una variabile
+						 e = new EspressioneConfronto(variabili[Integer.parseInt(""+confronto[0].charAt(1))-1],variabili[Integer.parseInt(""+confronto[2].charAt(1))-1],EspressioneConfronto.Operatore.getOperatore(confronto[1])); //allora confronto 2 variabili
+					}
+					else {//il primo operando è una variabile la seconda no
+						 e = new EspressioneConfronto(variabili[Integer.parseInt(""+confronto[0].charAt(1))-1],Costante.of(confronto[2]),EspressioneConfronto.Operatore.getOperatore(confronto[1])); //allora confronto 1 variabile con una costante
+					}
+				}
+				else {// vuol dire che il primo operando è una costante
+					if(confronto[2].startsWith("$")) { //se  il scondo è una variabile
+						 e = new EspressioneConfronto(Costante.of(confronto[0]),variabili[Integer.parseInt(""+confronto[2].charAt(1))-1],EspressioneConfronto.Operatore.getOperatore(confronto[1])); //allora confronto costante - variabile
+					}
+					else {
+						 e = new EspressioneConfronto(Costante.of(confronto[0]),Costante.of(confronto[2]),EspressioneConfronto.Operatore.getOperatore(confronto[1])); //allora confronto costante - variabile
+					}
+					
+				}
+				if(selezione.length==1) return new Selezione(e,istThen,null);
+				String[] strElse =selezione[1].split(":");//else
+				Istruzione[] istElse = new Istruzione[strElse.length];
+				for(int i = 0;i<strElse.length;i++) {
+					istElse[i]=parse(strElse[i]);//RICORSIONE  per prendere tutte le istruzioni - no entrare qua dentro durante la ricorsione
+				}
+				return new Selezione(e,istThen,istElse);
+				
 			case "WHILE":
 				break;
 			
 				//return null;
-		
 		}
 		return null;
 		
 	}
-	
-	
 	
 	@Override
 	public Iterator<Istruzione> iterator() {
@@ -116,12 +128,12 @@ public class Programma implements Iterable<Istruzione> {
 
 			@Override
 			public boolean hasNext() {
-				return k<istruzioni.length;	
+				return k<istruzioni.size();	
 			}
 
 			@Override
 			public Istruzione next() {
-				return hasNext()? istruzioni[k++]:null;
+				return hasNext()? istruzioni.get(k++):null;
 			}	
 		};
 	}

@@ -24,10 +24,10 @@ public class Selezione implements Istruzione{
 
  class If implements Istruzione{
 	protected EspressioneConfronto argomento;
-	protected Programma istruzioni;
+	protected Istruzione[] istruzioni;
 	public If(EspressioneConfronto e,Istruzione... istruzioni) {
 		argomento = e;
-		this.istruzioni = new Programma(istruzioni);
+		this.istruzioni = istruzioni;
 	}
 	@Override
 	public void esegui() {
@@ -38,9 +38,9 @@ public class Selezione implements Istruzione{
 }
  
  class Else implements Istruzione{
-	 protected Programma istruzioni;
+	 protected Istruzione[] istruzioni;
 		public Else(Istruzione... istruzioni) {
-			this.istruzioni = new Programma(istruzioni);
+			this.istruzioni = istruzioni;
 		}
 		@Override
 		public void esegui() {
