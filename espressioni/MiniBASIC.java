@@ -1,5 +1,6 @@
  package espressioni;
 
+import eccezioni.TipiIncopamtibiliException;
 import espressioni.EspressioneConfronto.Operatore;
 import espressioni.Variabile.Nome;
 

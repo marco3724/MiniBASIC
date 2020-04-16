@@ -16,7 +16,7 @@ abstract public class Espressione {
 	 * @author marco
 	 *
 	 */
-	enum Tipo {
+	public enum Tipo {
 		INTERO,STRINGA,BOOLEANO;
 	}
 	/**
@@ -39,7 +39,7 @@ abstract public class Espressione {
 	 * @param valore = valore da valutare
 	 * @return restituisce il tipo dell'espressione
 	 */
-	protected Tipo returnTipo(String valore) {
+	public static Tipo returnTipo(String valore) {
 		if(valore.equals("true") || valore.equals("false")) 
 			return Tipo.BOOLEANO;	
 		

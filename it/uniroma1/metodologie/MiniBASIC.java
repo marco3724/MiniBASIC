@@ -1,15 +1,23 @@
 package it.uniroma1.metodologie;
 
 
+import eccezioni.OperatoreNonTrovatoException;
+import eccezioni.TipiIncopamtibiliException;
 import espressioni.*;
 import espressioni.EspressioneConfronto.Operatore;
 import espressioni.Variabile.Nome;
+import istruzioni.Assegna;
+import istruzioni.Istruzione;
+import istruzioni.Print;
+import istruzioni.Selezione;
 
 
 public class MiniBASIC {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws NumberFormatException, OperatoreNonTrovatoException {
+		int s = 2;
 	Variabile v1 = new Variabile(Nome.$0,"2");
 	Variabile v2 = new Variabile(Nome.$1,"2");
+	Variabile v3 = new Variabile(Nome.$1,s);
 	Costante c1 = new Intero(2);
 	try {
 	EspressioneSomma c = new EspressioneSomma(v1,c1,new Intero(6),v2);
@@ -35,9 +43,26 @@ public class MiniBASIC {
 	System.out.println(c2.getTipo());
 	System.out.println(c9.getTipo());
 	System.out.println(c10.getValore());
-	
+	System.out.println((Espressione.returnTipo("2")==Espressione.Tipo.INTERO) +"aaaaaaaaaaaa"+ "");
+	new Assegna(v2,"ca").esegui();
+	new Assegna(v2,"3").esegui();
+	new Print(v2).esegui();
+	//Programma p = Programma.fromFile("Desktop");
+	Programma p1 = Programma.fromFile("C:\\\\Users\\\\uni\\\\Desktop\\\\prova.txt");
+	p1.istruzioni[0].esegui();//FUNGE
+	//Programma p = new Programma(new Assegna(v2,"ca"),new Print(v2),new Print(v2),new Print(v2));
+	 Print[] a = {new Print("no"),new Print("nono")};
+	Programma p=  Programma.of(new Selezione(new EspressioneConfronto(v2,new Intero(3),Operatore.UGUALE) ,a,new Print("non ciao"),new Print("non ciao")));
+	for(Istruzione i: p) {
+		i.esegui();
+	}
+	//Programma.of("C:\\Users\\uni\\Desktop\\workspace_java\\HomeWork\\src\\ciao.txt");
+	for(int i = 0;i<p.istruzioni.length;i++) {
+		p.istruzioni[i].esegui();
+	}
 	}
 	catch(TipiIncopamtibiliException e) {System.out.print(e);}
+	System.out.print("cioaicaoi");
 	}
 	
 

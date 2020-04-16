@@ -1,5 +1,6 @@
 package espressioni;
 
+import eccezioni.TipiIncopamtibiliException;
 import espressioni.Espressione.Tipo;
 /**
  * superclasse di EspressioneConfronto e EspressioneSomma 

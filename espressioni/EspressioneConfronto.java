@@ -1,4 +1,8 @@
 package espressioni;
+
+import eccezioni.OperatoreNonTrovatoException;
+import eccezioni.TipiIncopamtibiliException;
+
 /**
  * questa classe serve a un oggetto che cotiene il confronto fra due espressioni
  * @author marco
@@ -21,7 +25,18 @@ public class EspressioneConfronto extends EspressioneComposta {
 	 *
 	 */
 	public enum Operatore{
-		UGUALE,MAGGIORE_UGUALE,MINORE_UGUALE,MAGGIORE,MINORE,DIVERSO;
+		UGUALE("=="),MAGGIORE_UGUALE(">="),MINORE_UGUALE("<="),MAGGIORE(">"),MINORE("<"),DIVERSO("!=");
+		String simbolo;
+		private Operatore(String simbolo) {
+			this.simbolo = simbolo;
+		}
+		public static Operatore getOperatore(String simbolo) throws OperatoreNonTrovatoException {
+			for(Operatore op : Operatore.values()) 
+				if(op.simbolo.equals(simbolo)) return op;
+			 return null;
+			
+			
+		}
 	}
 	/**
 	 * 

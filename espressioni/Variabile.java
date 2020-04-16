@@ -1,5 +1,6 @@
 package espressioni;
 
+import eccezioni.TipiIncopamtibiliException;
 import espressioni.Espressione.Tipo;
 /**
  * Classe variabile serve a creare un oggetto di tipo variabile che avrà un valore e in base al tipo di valore gli verrà assegnato il tipo
@@ -14,7 +15,7 @@ public class Variabile extends Espressione {
 	/**
 	 * numero massimo di variabili che si possono instanziare 
 	 */
-	private int maxVariabili =Nome.values().length;
+	private static int maxVariabili = Nome.values().length;
 	/**
 	 * questo campo serve per contare il numero delle instanze create
 	 */
@@ -26,7 +27,7 @@ public class Variabile extends Espressione {
 	 *
 	 */
 	public enum Nome{
-		$0,$1,$2,$3,$4,$5,$6,$7,$8,$9
+		$0,$1,$2,$3,$4,$5,$6,$7,$8,$9;
 	}
 	/**
 	 * costruttore di questa classe,
@@ -79,11 +80,11 @@ public class Variabile extends Espressione {
 	 * 
 	 * @return restituisce il massimo numero di variabili che si possono creare
 	 */
-	public int getMaxVariabili() {return maxVariabili;}
+	public static int getMaxVariabili() {return maxVariabili;}
 	/**
 	 * 
 	 * @return resituisce il numero di variabili create
 	 */
-	public int getNumeroVariabili() {return numeroVariabili;}
+	public static int getNumeroVariabili() {return numeroVariabili;}
 
 }
