@@ -51,6 +51,16 @@ public class Variabile extends Espressione {
 	public Variabile(Nome nome,boolean valore) {
 		this(nome,""+valore);
 	}
+	public Variabile(Nome nome,Tipo tipo) {
+		super(tipo);
+		this.valore = switch(tipo) {
+		case INTERO-> "0";
+		case BOOLEANO-> "true";
+		case STRINGA-> "";
+		};
+		
+		this.nome = nome;
+	}
 	/**
 	 * assegna un nuovo valore alla variabile
 	 * @param valore è il nuovo valore della variabile che però deve essere compatibile con la vecchia variabile
@@ -86,5 +96,9 @@ public class Variabile extends Espressione {
 	 * @return resituisce il numero di variabili create
 	 */
 	public static int getNumeroVariabili() {return numeroVariabili;}
+	@Override
+	public String toString(){
+		return this.nome+"";
+	}
 
 }

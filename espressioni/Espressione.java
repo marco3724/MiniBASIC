@@ -35,11 +35,12 @@ abstract public class Espressione {
 	}
 	
 	/**
-	 * 
+	 * serve a valutare il tipo di un'espressione
 	 * @param valore = valore da valutare
 	 * @return restituisce il tipo dell'espressione
 	 */
 	public static Tipo returnTipo(String valore) {
+		if(valore.charAt(0)=='"' && valore.charAt(valore.length()-1)=='"') return Tipo.STRINGA;
 		if(valore.equals("true") || valore.equals("false")) 
 			return Tipo.BOOLEANO;	
 		
@@ -53,6 +54,7 @@ abstract public class Espressione {
 			}
 		}
 	}
+	
 	
 	/**
 	 * 

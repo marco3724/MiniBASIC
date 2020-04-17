@@ -10,7 +10,7 @@ import istruzioni.Assegna;
 import istruzioni.Istruzione;
 import istruzioni.Print;
 import istruzioni.Selezione;
-
+//dovrebbe esserci un eccezione nell'else
 
 public class MiniBASIC {
 	public static void main(String[] args) throws NumberFormatException, OperatoreNonTrovatoException {
@@ -30,7 +30,7 @@ public class MiniBASIC {
 	//EspressioneConfronto c7 = new EspressioneConfronto(new Costante("CIAO"), new Costante("ciao"), Operatore.MAGGIORE_UGUALE);
 	//EspressioneConfronto c8 = new EspressioneConfronto(new Costante("C"), new Costante("C"), Operatore.MAGGIORE_UGUALE);
 	EspressioneConfronto c8 = new EspressioneConfronto(new Stringa("C"), new Stringa("C"), Operatore.UGUALE);
-	EspressioneSomma c9 = new EspressioneSomma(new Booleano(false),new Booleano(true),new Booleano(true));
+	EspressioneSomma c9 = new EspressioneSomma(new Booleano(false),new Booleano(true),new Booleano(true),c2);
 	EspressioneConfronto c10 = new EspressioneConfronto(v1,new Intero(9),Operatore.UGUALE);
 	System.out.println(c.getValore());
 	System.out.println(c2.getValore());
@@ -48,21 +48,25 @@ public class MiniBASIC {
 	new Assegna(v2,"3").esegui();
 	new Print(v2).esegui();
 	//Programma p = Programma.fromFile("Desktop");
-	Programma p1 = Programma.fromFile("C:\\\\Users\\\\uni\\\\Desktop\\\\prova.txt");
+	Programma p1 = Programma.fromFile("prova.txt");
 	//p1.istruzioni.get(0).esegui();//FUNGE
 	//Programma p = new Programma(new Assegna(v2,"ca"),new Print(v2),new Print(v2),new Print(v2));
-	 Print[] a = {new Print("no"),new Print("nono")};
-	Programma p=  Programma.of(new Selezione(new EspressioneConfronto(v2,new Intero(3),Operatore.UGUALE) ,a,new Print("non ciao"),new Print("non ciao")));
+	// Print[] a = {new Print("no"),new Print("nono")};
+	//Programma p=  Programma.of(new Selezione(new EspressioneConfronto(v2,new Intero(3),Operatore.UGUALE) ,a,new Print("non ciao"),new Print("non ciao")));
 	for(Istruzione i: p1) {
 		i.esegui();
 	}
 	//Programma.of("C:\\Users\\uni\\Desktop\\workspace_java\\HomeWork\\src\\ciao.txt");
-	for(int i = 0;i<p.istruzioni.size();i++) {
-		p.istruzioni.get(i).esegui();
-	}
+	//for(int i = 0;i<p.istruzioni.size();i++) {
+		//p.istruzioni.get(i).esegui();
+	//}
+	
+	//Variabile[] var = new Variabile[Variabile.getMaxVariabili()];
+	//var[1] = new Variabile(Nome.$0,4);
+	//System.out.println(var[1].getValore());
 	}
 	catch(TipiIncopamtibiliException e) {System.out.print(e);}
-	System.out.print("cioaicaoi");
+	//System.out.print("cioaicaoi");
 	}
 	
 

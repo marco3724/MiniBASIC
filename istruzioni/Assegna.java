@@ -45,7 +45,7 @@ public class Assegna implements Istruzione {
 		variabile.setValore(argomento);
 		}
 		catch(TipiIncopamtibiliException e) {
-			System.out.println(e);
+			System.out.println(e+" "+variabile+" "+argomento);
 		}
 	}
 

@@ -1,25 +1,28 @@
 package istruzioni;
 
+import espressioni.Booleano;
 import espressioni.Espressione;
+import espressioni.Intero;
+import espressioni.Stringa;
 
 public class Print implements Istruzione {
-	private String argomento;
+	private Espressione argomento;
 	
 	public Print(String e) {
-		argomento = e;
+		this(new Stringa(e));
 	}
 	public Print(Espressione e) {
-		this(""+e.getValore());
+		argomento = e;
 	}
 	public Print(int e) {
-		this(""+e);
+		this(new Intero(e));
 	}
 	public Print(boolean e) {
-		this(""+e);
+		this(new Booleano(e));
 	}
 
 	public void esegui() {
-		System.out.println(argomento);
+		System.out.println(argomento.getValore());
 	}
 
 
