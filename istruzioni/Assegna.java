@@ -1,6 +1,7 @@
 package istruzioni;
 
 import eccezioni.TipiIncopamtibiliException;
+import espressioni.Costante;
 import espressioni.Espressione;
 import espressioni.Variabile;
 
@@ -17,24 +18,24 @@ public class Assegna implements Istruzione {
 	/**
 	 * l'argometo puo essere una variabile o una costante
 	 */
-	private String argomento;
+	private Espressione argomento;
 	/**
 	 * 
 	 * @param variabile 
 	 * @param argomento puo essere una variabile/costante di tipo booleano/Stringa /intero
 	 */
 	public Assegna(Variabile variabile,String argomento) {
-		this.variabile = variabile;
-		this.argomento = argomento;
+		this(variabile,Costante.of(argomento));
 	}
 	public Assegna(Variabile variabile,int argomento) {
-		this(variabile,""+argomento);
+		this(variabile,Costante.of(""+argomento));
 	}
 	public Assegna(Variabile variabile,boolean argomento) {
-		this(variabile,""+argomento);
+		this(variabile,Costante.of(""+argomento));
 	}
 	public Assegna(Variabile variabile,Espressione argomento) {
-		this(variabile,""+argomento.getValore());
+		this.variabile = variabile;
+		this.argomento = argomento;
 	}
 	/**
 	 * assegna il valore , se il tipo non è compatibile lancia un errore
@@ -42,7 +43,9 @@ public class Assegna implements Istruzione {
 	@Override
 	public void esegui()  {
 		try {
-		variabile.setValore(argomento);
+		//System.out.println("riga 46 assegna ARGOMENTO"+argomento);
+		variabile.setValore(""+argomento.getValore());
+		//System.out.println(variabile.getValore());
 		}
 		catch(TipiIncopamtibiliException e) {
 			System.out.println(e+" "+variabile+" "+argomento);

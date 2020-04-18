@@ -22,7 +22,7 @@ public class Print implements Istruzione {
 	}
 
 	public void esegui() {
-		System.out.println(argomento.getValore());
+		System.out.println(argomento.getValore()+" "+argomento);
 	}
 
 

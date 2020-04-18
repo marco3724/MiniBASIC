@@ -11,7 +11,7 @@ abstract public class EspressioneComposta extends Espressione{
 	/**
 	 * array di espressioni che compongono l'espressione
 	 */
-	private Espressione[] espressione;
+	protected Espressione[] espressione;
 	/**
 	 * viene assegnato il tipo tramite la sua superclasse
 	 * i valori tramite il parametro
@@ -20,6 +20,7 @@ abstract public class EspressioneComposta extends Espressione{
 	 */
 	public EspressioneComposta(Espressione... e1) throws TipiIncopamtibiliException{
 		super(e1[0].getTipo());
+		//System.out.println("RIGA 23 ESPRESSIONE COMPOSTA "+e1[0].getValore()+" "+e1[1].getValore());
 		if(!sonoDelloStessoTipo(e1)) throw new TipiIncopamtibiliException();
 		espressione = e1;
 	}

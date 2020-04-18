@@ -25,7 +25,7 @@ public class EspressioneConfronto extends EspressioneComposta {
 	 *
 	 */
 	public enum Operatore{
-		UGUALE("=="),MAGGIORE_UGUALE(">="),MINORE_UGUALE("<="),MAGGIORE(">"),MINORE("<"),DIVERSO("!=");
+		UGUALE("=="),MAGGIORE_UGUALE(">="),MINORE_UGUALE("<="),MAGGIORE(">"),MINORE("<"),DIVERSO("<>");
 		String simbolo;
 		private Operatore(String simbolo) {
 			this.simbolo = simbolo;
@@ -85,7 +85,7 @@ public class EspressioneConfronto extends EspressioneComposta {
 	 */
 	@Override
 	public Object getValore() {
-		return valore;
+		return Confronto();
 	}
 	
 	

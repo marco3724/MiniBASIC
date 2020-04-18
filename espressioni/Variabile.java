@@ -67,7 +67,9 @@ public class Variabile extends Espressione {
 	 */
 	public void setValore(String valore) throws TipiIncopamtibiliException{
 		if(this.getTipo()!=super.returnTipo(valore)) throw new TipiIncopamtibiliException();
+		//System.out.println(valore+" prima");
 		this.valore = valore;
+		//System.out.println(valore+" dopo VARIABILE 72");
 		
 	}
 	public void setValore(int valore) throws TipiIncopamtibiliException {
@@ -76,6 +78,9 @@ public class Variabile extends Espressione {
 	}
 	public void setValore(boolean valore) throws TipiIncopamtibiliException{
 		setValore(""+valore);
+	}
+	public void setValore(Variabile valore) throws TipiIncopamtibiliException{
+		setValore(""+valore.getValore());
 	}
 	/**
 	 * ritorna il valore in base al suo tipo
@@ -98,7 +103,7 @@ public class Variabile extends Espressione {
 	public static int getNumeroVariabili() {return numeroVariabili;}
 	@Override
 	public String toString(){
-		return this.nome+"";
+		return super.toString()+"  "+this.nome+"";
 	}
 
 }

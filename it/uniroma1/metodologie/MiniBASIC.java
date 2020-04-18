@@ -20,8 +20,8 @@ public class MiniBASIC {
 	Variabile v3 = new Variabile(Nome.$1,s);
 	Costante c1 = new Intero(2);
 	try {
-	EspressioneSomma c = new EspressioneSomma(v1,c1,new Intero(6),v2);
-	System.out.println(c.getValore()+"  "+c.getTipo());
+	//EspressioneSomma c = new EspressioneSomma(v1,c1,new Intero(6),v2);
+	/**System.out.println(c.getValore()+"  "+c.getTipo());
 	EspressioneConfronto c2 = new EspressioneConfronto(v1, v2, Operatore.UGUALE);
 	EspressioneConfronto c3 = new EspressioneConfronto(v1, v2, Operatore.MAGGIORE);
 	EspressioneConfronto c4 = new EspressioneConfronto(v2, v1, Operatore.MAGGIORE);
@@ -46,16 +46,22 @@ public class MiniBASIC {
 	System.out.println((Espressione.returnTipo("2")==Espressione.Tipo.INTERO) +"aaaaaaaaaaaa"+ "");
 	new Assegna(v2,"ca").esegui();
 	new Assegna(v2,"3").esegui();
-	new Print(v2).esegui();
-	//Programma p = Programma.fromFile("Desktop");
+	//new Print(v2).esegui();
+	//Programma p = Programma.fromFile("Desktop");**/
 	Programma p1 = Programma.fromFile("prova.txt");
 	//p1.istruzioni.get(0).esegui();//FUNGE
 	//Programma p = new Programma(new Assegna(v2,"ca"),new Print(v2),new Print(v2),new Print(v2));
 	// Print[] a = {new Print("no"),new Print("nono")};
 	//Programma p=  Programma.of(new Selezione(new EspressioneConfronto(v2,new Intero(3),Operatore.UGUALE) ,a,new Print("non ciao"),new Print("non ciao")));
 	for(Istruzione i: p1) {
+		//System.out.println(i);
+		//System.out.println(Programma.variabili[1]+" FANCULOOOOOOOOOO");
 		i.esegui();
+		//System.out.println(Programma.variabili[1]+" FANCULOOOOOOOOOO "+Programma.variabili[1].getValore());
 	}
+	//new Assegna(v1,c).esegui();
+	//System.out.println(v1+"  "+v1.getValore());
+	//System.out.println(Programma.variabili[7]);
 	//Programma.of("C:\\Users\\uni\\Desktop\\workspace_java\\HomeWork\\src\\ciao.txt");
 	//for(int i = 0;i<p.istruzioni.size();i++) {
 		//p.istruzioni.get(i).esegui();

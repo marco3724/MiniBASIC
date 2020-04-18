@@ -11,6 +11,10 @@ public class Selezione implements Istruzione{
 		se = new If(e,seIstruzioni);
 		altrimenti = new Else(altrimentiIstruzioni);
 	}
+	public Selezione(If ist,Istruzione... altrimentiIstruzioni) {
+		se = ist;
+		altrimenti = new Else(altrimentiIstruzioni);
+	}
 	@Override
 	public void esegui() {
 		if((boolean)se.argomento.getValore()) {
@@ -22,20 +26,6 @@ public class Selezione implements Istruzione{
 	}
 }
 
- class If implements Istruzione{
-	protected EspressioneConfronto argomento;
-	protected Istruzione[] istruzioni;
-	public If(EspressioneConfronto e,Istruzione... istruzioni) {
-		argomento = e;
-		this.istruzioni = istruzioni;
-	}
-	@Override
-	public void esegui() {
-		for(Istruzione i: istruzioni) {
-			i.esegui();
-		}	
-	}
-}
  
  class Else implements Istruzione{
 	 protected Istruzione[] istruzioni;

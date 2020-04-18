@@ -7,6 +7,9 @@ public class Iterazione implements Istruzione {
 	public Iterazione(EspressioneConfronto e,Istruzione... i) {
 		whileDo = new If(e,i);
 	}
+	public Iterazione(If e) {
+		whileDo = e;
+	}
 	@Override
 	public void esegui() {
 		while((boolean)whileDo.argomento.getValore()) {

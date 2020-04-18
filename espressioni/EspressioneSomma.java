@@ -19,13 +19,14 @@ public class EspressioneSomma extends EspressioneComposta{
 	 */
 	public EspressioneSomma(Espressione... espressione) throws TipiIncopamtibiliException {
 		super(espressione);
-		somma();
+		System.out.println(espressione[0].getValore()+"VARIABILE espressioneSomma "+espressione[0]);
+		valore = somma();
 	}
 	/**
 	 * somma in base al tipo
 	 */
-	private void somma() {
-		valore = switch(this.getTipo()) {
+	private String somma() {
+		return switch(this.getTipo()) {
 		case INTERO-> ""+sommaInteri();
 		case BOOLEANO-> ""+sommaBooleani();
 		case STRINGA-> concatena();
@@ -69,8 +70,8 @@ public class EspressioneSomma extends EspressioneComposta{
 	 */
 	@Override
 	public Object getValore() {
-		
-		return valore;
+		//System.out.println("RIGA 72 espressionesomma  "+espressione[0]+" "+espressione[0].getValore()+" "+espressione[1].getValore()+" "+valore);
+		return somma();
 	}
 	
 
