@@ -25,32 +25,29 @@ import istruzioni.*;
 import espressioni.Tipo;
 
 public class Programma implements Iterable<Istruzione> {
-	public ArrayList<Istruzione> istruzioni;
+	public static ArrayList<Istruzione> istruzioni;
 	static Variabile[] variabili =  new Variabile[Variabile.getMaxVariabili()]; // il massimo delle variabili sara uguale al numero e la loro posizione è dopo il $
-	
-	Termine terminato ;
+
 	
 	public Programma(Istruzione... istruzioni) {
 		this.istruzioni = new ArrayList<Istruzione>();
-		
 		for(Istruzione i: istruzioni) 
-			this.istruzioni.add(i);
-			
+			this.istruzioni.add(i);		
 	}
 	
 	public Programma(ArrayList<Istruzione> istruzioni) {
 		this.istruzioni = istruzioni;
-		
 	}
 	
 	public static Programma of(Istruzione... istruzioni) {
 		variabili = new Variabile[Variabile.getMaxVariabili()];
 		return new Programma(istruzioni);
 	}
+	
 	static public Programma fromFile(String f) throws NumberFormatException, OperatoreNonTrovatoException, TipiIncopamtibiliException { // SICURAMENTE STATIC
 		String riga ;
+		//variabili = new Variabile[Variabile.getMaxVariabili()];
 		ArrayList<Istruzione> ist = new ArrayList<Istruzione>();
-		
 		try (BufferedReader b =Files.newBufferedReader(Paths.get(f))){
 			while(b.ready()) {
 				riga = b.readLine();
@@ -68,18 +65,18 @@ public class Programma implements Iterable<Istruzione> {
 		riga = riga.trim();
 		String istruzione = riga.split(" ")[0];
 		String argomento = riga.split(" ",2)[1];
-		//System.out.println(istruzione+" QUIIIIIIIIIIIIII"+argomento);
 		switch(istruzione) {
 			case "PRINT":
-				if(argomento.startsWith("$")) return new Print(variabili[Integer.parseInt(""+argomento.charAt(1))+1]);
+				if(argomento.startsWith("$")) return new Print(variabili[Integer.parseInt(""+argomento.charAt(1))]);
 				return new Print(Costante.of(argomento));
 			case "REM": return new Commento(argomento);
 			case "IF":  return parseSelezione(riga);
 			case "WHILE": return parseWhileDo(riga);
-				
+			case "GOTO"	:
+			case "END"	: return new Termine();
 			default:
 				if(istruzione.startsWith("$")) return  parseAssegna(argomento, istruzione);
-				//return null;
+				if(istruzione.endsWith(":")) return new Etichetta(istruzione,istruzioni.size());
 		}
 		return null;
 	}
@@ -87,11 +84,15 @@ public class Programma implements Iterable<Istruzione> {
 	private static Assegna parseAssegna(String argomento,String istruzione) throws TipiIncopamtibiliException {
 		String[] valore = argomento.split(" ",2);
 		if(!(valore[1].contains(" + ")) ) {
-			//System.out.println(valore[1]+"HEYYY");
-			variabili[Integer.parseInt(""+istruzione.charAt(1))+1] = new Variabile(Variabile.Nome.valueOf(istruzione),valore[1]);//variabile da essere assegnato
-			//System.out.println(variabili[Integer.parseInt(""+istruzione.charAt(1))-1]+"RIGA 92 PROGRAMMA");
-			return new Assegna(variabili[Integer.parseInt(""+istruzione.charAt(1))+1],valore[1]);
+			if(valore[1].startsWith("$")) {
+				if(variabili[Integer.parseInt(""+valore[1].charAt(1))]== null) variabili[Integer.parseInt(""+valore[1].charAt(1))] = new Variabile(Variabile.Nome.valueOf(valore[1]),"");        
+				return new Assegna(variabili[Integer.parseInt(""+istruzione.charAt(1))],variabili[Integer.parseInt(""+valore[1].charAt(1))]);
+				}
+			else variabili[Integer.parseInt(""+istruzione.charAt(1))] = new Variabile(Variabile.Nome.valueOf(istruzione),valore[1]);//variabile da essere assegnato
+			return new Assegna(variabili[Integer.parseInt(""+istruzione.charAt(1))],valore[1]);
+			
 		}
+		
 		//System.out.println(valore[1]+"HUAAAYYY");
 		String[] concatenazione = valore[1].split(" [+] ");
 		//System.out.println(concatenazione[1]+"HUAAxdAYYY");
@@ -99,14 +100,14 @@ public class Programma implements Iterable<Istruzione> {
 		int i = 0;
 		for(String v: concatenazione) 
 		{
-			if(v.startsWith("$")) valori[i++] = variabili[Integer.parseInt(""+v.charAt(1))+1];
+			if(v.startsWith("$")) valori[i++] = variabili[Integer.parseInt(""+v.charAt(1))];
 			else valori[i++] = Costante.of(v);
 		}
 		EspressioneSomma es = new EspressioneSomma(valori);
-		
-		//nNOOOOO variabili[Integer.parseInt(""+istruzione.charAt(1))-1] = new Variabile(Variabile.Nome.valueOf(istruzione),es.getTipo());//variabile da essere assegnato NON DEVE ESSRE ECREATO
+		if(variabili[Integer.parseInt(""+istruzione.charAt(1))]== null) 
+			variabili[Integer.parseInt(""+istruzione.charAt(1))] = new Variabile(Variabile.Nome.valueOf(istruzione),es.getTipo()); //variabile da essere assegnato NON DEVE ESSRE ECREATO
 		//System.out.println(es+"IL VALORE riga 109 programma");
-		return new Assegna(variabili[Integer.parseInt(""+istruzione.charAt(1))+1],es);
+		return new Assegna(variabili[Integer.parseInt(""+istruzione.charAt(1))],es);
 	}
 	
 	private static Selezione parseSelezione(String riga) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException {
@@ -147,15 +148,15 @@ public class Programma implements Iterable<Istruzione> {
 		// espressione confronto
 		if(confronto[0].startsWith("$")) {//se è una variabile
 			if(confronto[2].startsWith("$")) { //se anche il scondo è una variabile
-				e = new EspressioneConfronto(variabili[Integer.parseInt(""+confronto[0].charAt(1))+1],variabili[Integer.parseInt(""+confronto[2].charAt(1))+1],operatore); //allora confronto 2 variabili
+				e = new EspressioneConfronto(variabili[Integer.parseInt(""+confronto[0].charAt(1))],variabili[Integer.parseInt(""+confronto[2].charAt(1))],operatore); //allora confronto 2 variabili
 			}
 			else {//il primo operando è una variabile la seconda no
-				e = new EspressioneConfronto(variabili[Integer.parseInt(""+confronto[0].charAt(1))+1],Costante.of(confronto[2]),operatore); //allora confronto 1 variabile con una costante
+				e = new EspressioneConfronto(variabili[Integer.parseInt(""+confronto[0].charAt(1))],Costante.of(confronto[2]),operatore); //allora confronto 1 variabile con una costante
 			}
 		}
 		else {// vuol dire che il primo operando è una costante
 			if(confronto[2].startsWith("$")) { //se  il scondo è una variabile
-				e = new EspressioneConfronto(Costante.of(confronto[0]),variabili[Integer.parseInt(""+confronto[2].charAt(1))+1],operatore); //allora confronto costante - variabile
+				e = new EspressioneConfronto(Costante.of(confronto[0]),variabili[Integer.parseInt(""+confronto[2].charAt(1))],operatore); //allora confronto costante - variabile
 			}
 			else {
 				e = new EspressioneConfronto(Costante.of(confronto[0]),Costante.of(confronto[2]),operatore); //allora confronto costante - variabile

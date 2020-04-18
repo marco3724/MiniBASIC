@@ -7,7 +7,7 @@ public class Termine implements Istruzione{
 	}
 	@Override
 	public void esegui() {
-		terminato =true;
+		System.exit(1);
 	}
 	public boolean getValore() {
 		return terminato;

@@ -19,7 +19,7 @@ public class EspressioneSomma extends EspressioneComposta{
 	 */
 	public EspressioneSomma(Espressione... espressione) throws TipiIncopamtibiliException {
 		super(espressione);
-		System.out.println(espressione[0].getValore()+"VARIABILE espressioneSomma "+espressione[0]);
+		//System.out.println(espressione[0].getValore()+"VARIABILE espressioneSomma "+espressione[0]);
 		valore = somma();
 	}
 	/**

@@ -53,12 +53,14 @@ public class MiniBASIC {
 	//Programma p = new Programma(new Assegna(v2,"ca"),new Print(v2),new Print(v2),new Print(v2));
 	// Print[] a = {new Print("no"),new Print("nono")};
 	//Programma p=  Programma.of(new Selezione(new EspressioneConfronto(v2,new Intero(3),Operatore.UGUALE) ,a,new Print("non ciao"),new Print("non ciao")));
+	
 	for(Istruzione i: p1) {
 		//System.out.println(i);
 		//System.out.println(Programma.variabili[1]+" FANCULOOOOOOOOOO");
 		i.esegui();
 		//System.out.println(Programma.variabili[1]+" FANCULOOOOOOOOOO "+Programma.variabili[1].getValore());
 	}
+	//System.out.println(Programma.variabili[3].getTipo());
 	//new Assegna(v1,c).esegui();
 	//System.out.println(v1+"  "+v1.getValore());
 	//System.out.println(Programma.variabili[7]);
