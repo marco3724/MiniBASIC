@@ -24,15 +24,25 @@ import espressioni.Variabile.Nome;
 import istruzioni.*;
 import espressioni.Tipo;
 
-public class Programma implements Iterable<Istruzione> {
-	public static ArrayList<Istruzione> istruzioni;
-	static Variabile[] variabili =  new Variabile[Variabile.getMaxVariabili()]; // il massimo delle variabili sara uguale al numero e la loro posizione è dopo il $
-
+public class Programma implements Iterable<Istruzione> {//FERMA QUI
+	public ArrayList<Istruzione> istruzioni;
+	public Variabile[] variabili ;// il massimo delle variabili sara uguale al numero dei nomi e la loro posizione è dopo il $
+	public ArrayList<Etichetta> etichette ;
+	static int indice = 0;
 	
 	public Programma(Istruzione... istruzioni) {
 		this.istruzioni = new ArrayList<Istruzione>();
+		this.variabili = new Variabile[Variabile.getMaxVariabili()];
 		for(Istruzione i: istruzioni) 
 			this.istruzioni.add(i);		
+	}
+	
+	public Programma(Variabile[] var,ArrayList<Istruzione> istruzioni,ArrayList<Etichetta> label) {
+		this.istruzioni = new ArrayList<Istruzione>();
+		for(Istruzione i: istruzioni) 
+			this.istruzioni.add(i);
+		variabili = var;
+		etichette = label;
 	}
 	
 	public Programma(ArrayList<Istruzione> istruzioni) {
@@ -40,56 +50,73 @@ public class Programma implements Iterable<Istruzione> {
 	}
 	
 	public static Programma of(Istruzione... istruzioni) {
-		variabili = new Variabile[Variabile.getMaxVariabili()];
 		return new Programma(istruzioni);
 	}
 	
 	static public Programma fromFile(String f) throws NumberFormatException, OperatoreNonTrovatoException, TipiIncopamtibiliException { // SICURAMENTE STATIC
 		String riga ;
-		//variabili = new Variabile[Variabile.getMaxVariabili()];
 		ArrayList<Istruzione> ist = new ArrayList<Istruzione>();
+		ArrayList<Etichetta> label = new ArrayList<Etichetta>();
+		Variabile[] var = new Variabile[Variabile.getMaxVariabili()];
 		try (BufferedReader b =Files.newBufferedReader(Paths.get(f))){
 			while(b.ready()) {
 				riga = b.readLine();
-				ist.add(parse(riga));//SISTAMA
+				ist.add(parse(riga,var,label));
+				indice++;
 			}	
 		}
 		catch(IOException e) {
 			System.out.println(e);
 		}
-		return new Programma(ist);
+		
+		return new Programma(var,ist,label);
 		}
 	
 	
-	private static Istruzione parse(String riga) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException {
+	private static Istruzione parse(String riga,Variabile[] var,ArrayList<Etichetta> label) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException {
 		riga = riga.trim();
 		String istruzione = riga.split(" ")[0];
-		String argomento = riga.split(" ",2)[1];
+		String argomento = "";
+		if(!istruzione.equals("END") && !istruzione.endsWith(":") )  argomento = riga.split(" ",2)[1];
 		switch(istruzione) {
 			case "PRINT":
-				if(argomento.startsWith("$")) return new Print(variabili[Integer.parseInt(""+argomento.charAt(1))]);
+				if(argomento.startsWith("$")) return new Print(var[Integer.parseInt(""+argomento.charAt(1))]);
 				return new Print(Costante.of(argomento));
 			case "REM": return new Commento(argomento);
-			case "IF":  return parseSelezione(riga);
-			case "WHILE": return parseWhileDo(riga);
-			case "GOTO"	:
+			case "IF":  return parseSelezione(riga,var,label);
+			case "WHILE": return parseWhileDo(riga,var,label);
+			case "GOTO"	:return new Salto(label.get(trovaEtichetta(argomento,label)));// ho un salto alla posizione dell'etichetta nelle etichette che pero non ha ancora un posizione
 			case "END"	: return new Termine();
 			default:
-				if(istruzione.startsWith("$")) return  parseAssegna(argomento, istruzione);
-				if(istruzione.endsWith(":")) return new Etichetta(istruzione,istruzioni.size());
+				if(istruzione.startsWith("$")) return  parseAssegna(argomento, istruzione,var);
+				if(istruzione.endsWith(":")) return creaEtichette(istruzione.substring(0, istruzione.length()-1),label);//senza -1 cosi ho direttamente l'istruzione successive
 		}
 		return null;
 	}
+	private static Etichetta creaEtichette(String etichetta,ArrayList<Etichetta> label) {
+		if(label.get(trovaEtichetta(etichetta,label)).getPosizione() == -1) label.get(trovaEtichetta(etichetta,label)).setPosizione(indice+1);
+		return label.get(trovaEtichetta(etichetta,label));
+	}
+	private static int trovaEtichetta(String etichetta,ArrayList<Etichetta> label) {
+		int i = 0;
+		for(Etichetta e:label) {
+			if(etichetta.equals(e.getNome())) return i;
+			i++;
+		}
+		label.add(new Etichetta(etichetta,-1));
+		return i;
+		
+	}
 	
-	private static Assegna parseAssegna(String argomento,String istruzione) throws TipiIncopamtibiliException {
+	private static Assegna parseAssegna(String argomento,String istruzione,Variabile[] var) throws TipiIncopamtibiliException {
 		String[] valore = argomento.split(" ",2);
 		if(!(valore[1].contains(" + ")) ) {
 			if(valore[1].startsWith("$")) {
-				if(variabili[Integer.parseInt(""+valore[1].charAt(1))]== null) variabili[Integer.parseInt(""+valore[1].charAt(1))] = new Variabile(Variabile.Nome.valueOf(valore[1]),"");        
-				return new Assegna(variabili[Integer.parseInt(""+istruzione.charAt(1))],variabili[Integer.parseInt(""+valore[1].charAt(1))]);
+				if(var[Integer.parseInt(""+valore[1].charAt(1))]== null) var[Integer.parseInt(""+valore[1].charAt(1))] = new Variabile(Variabile.Nome.valueOf(valore[1]),"");        
+				return new Assegna(var[Integer.parseInt(""+istruzione.charAt(1))],var[Integer.parseInt(""+valore[1].charAt(1))]);
 				}
-			else variabili[Integer.parseInt(""+istruzione.charAt(1))] = new Variabile(Variabile.Nome.valueOf(istruzione),valore[1]);//variabile da essere assegnato
-			return new Assegna(variabili[Integer.parseInt(""+istruzione.charAt(1))],valore[1]);
+			else var[Integer.parseInt(""+istruzione.charAt(1))] = new Variabile(Variabile.Nome.valueOf(istruzione),valore[1]);//variabile da essere assegnato
+			return new Assegna(var[Integer.parseInt(""+istruzione.charAt(1))],valore[1]);
 			
 		}
 		
@@ -100,47 +127,47 @@ public class Programma implements Iterable<Istruzione> {
 		int i = 0;
 		for(String v: concatenazione) 
 		{
-			if(v.startsWith("$")) valori[i++] = variabili[Integer.parseInt(""+v.charAt(1))];
+			if(v.startsWith("$")) valori[i++] = var[Integer.parseInt(""+v.charAt(1))];
 			else valori[i++] = Costante.of(v);
 		}
 		EspressioneSomma es = new EspressioneSomma(valori);
-		if(variabili[Integer.parseInt(""+istruzione.charAt(1))]== null) 
-			variabili[Integer.parseInt(""+istruzione.charAt(1))] = new Variabile(Variabile.Nome.valueOf(istruzione),es.getTipo()); //variabile da essere assegnato NON DEVE ESSRE ECREATO
+		if(var[Integer.parseInt(""+istruzione.charAt(1))]== null) 
+			var[Integer.parseInt(""+istruzione.charAt(1))] = new Variabile(Variabile.Nome.valueOf(istruzione),es.getTipo()); //variabile da essere assegnato NON DEVE ESSRE ECREATO
 		//System.out.println(es+"IL VALORE riga 109 programma");
-		return new Assegna(variabili[Integer.parseInt(""+istruzione.charAt(1))],es);
+		return new Assegna(var[Integer.parseInt(""+istruzione.charAt(1))],es);
 	}
 	
-	private static Selezione parseSelezione(String riga) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException {
+	private static Selezione parseSelezione(String riga,Variabile[] var,ArrayList<Etichetta> label) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException {
 		String[] selezione =riga.split("ELSE",2);//if...else....
 		String[] ifThen =selezione[0].split("THEN",2);//if...then...
 		EspressioneConfronto e;// l'espressione di confronto if(e)
 		String[] strThen = ifThen[1].split(" : ");//then.... formsto testo-da convertire
 		
 		String[] confronto = ifThen[0].substring(3).split(" ");// il confronto if(...)
-		If istruzioneIf = parseConfronto(confronto,strThen);
+		If istruzioneIf = parseConfronto(confronto,strThen,var,label);
 		if(selezione.length==1) return new Selezione(istruzioneIf,null);
 		String[] strElse =selezione[1].split(":");//else
 		Istruzione[] istElse = new Istruzione[strElse.length];
 		for(int i = 0;i<strElse.length;i++) {
-			istElse[i]=parse(strElse[i]);//RICORSIONE  per prendere tutte le istruzioni - non dovrebbe entrare qua dentro durante la ricorsione
+			istElse[i]=parse(strElse[i],var,label);//RICORSIONE  per prendere tutte le istruzioni - non dovrebbe entrare qua dentro durante la ricorsione
 		}
 		return new Selezione(istruzioneIf,istElse);
 	}
 	
-	private static Iterazione parseWhileDo(String riga) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException {
-		String[] selezione =riga.split("DO",2);//if...else....
+	private static Iterazione parseWhileDo(String riga,Variabile[] var,ArrayList<Etichetta> label) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException {
+		String[] selezione =riga.split("DO",2);
 		System.out.println(selezione[0]+"  LOOOOL   "+selezione[1]);
 		String condizione = selezione[0].substring(6);//inizia direttamete dalla condizione
 		System.out.println(condizione);
 		String strIstruzione = selezione[1];//inizio direttamente dall'istruzioni
 		System.out.println(strIstruzione+"mac so");
 		System.out.println("ARRIVO QUA");
-		If istruzioneIf =  parseConfronto(condizione.split(" "),strIstruzione.split(" : "));
+		If istruzioneWhileDo =  parseConfronto(condizione.split(" "),strIstruzione.split(" : "), var,label);
 		System.out.println("ARRIVO QUAAA");
-		return new Iterazione(istruzioneIf);
+		return new Iterazione(istruzioneWhileDo);
 	}
 	
-	private static If parseConfronto(String[] confronto,String[] strThen) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException {
+	private static If parseConfronto(String[] confronto,String[] strThen,Variabile[] var,ArrayList<Etichetta> label) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException {
 		Istruzione[] istThen = new Istruzione[strThen.length];//lista di istruzioni del Then
 		EspressioneConfronto e;// l'espressione di confronto if(e)
 		EspressioneConfronto.Operatore.getOperatore(confronto[1]);//operatore (><=..)
@@ -148,15 +175,15 @@ public class Programma implements Iterable<Istruzione> {
 		// espressione confronto
 		if(confronto[0].startsWith("$")) {//se è una variabile
 			if(confronto[2].startsWith("$")) { //se anche il scondo è una variabile
-				e = new EspressioneConfronto(variabili[Integer.parseInt(""+confronto[0].charAt(1))],variabili[Integer.parseInt(""+confronto[2].charAt(1))],operatore); //allora confronto 2 variabili
+				e = new EspressioneConfronto(var[Integer.parseInt(""+confronto[0].charAt(1))],var[Integer.parseInt(""+confronto[2].charAt(1))],operatore); //allora confronto 2 variabili
 			}
 			else {//il primo operando è una variabile la seconda no
-				e = new EspressioneConfronto(variabili[Integer.parseInt(""+confronto[0].charAt(1))],Costante.of(confronto[2]),operatore); //allora confronto 1 variabile con una costante
+				e = new EspressioneConfronto(var[Integer.parseInt(""+confronto[0].charAt(1))],Costante.of(confronto[2]),operatore); //allora confronto 1 variabile con una costante
 			}
 		}
 		else {// vuol dire che il primo operando è una costante
 			if(confronto[2].startsWith("$")) { //se  il scondo è una variabile
-				e = new EspressioneConfronto(Costante.of(confronto[0]),variabili[Integer.parseInt(""+confronto[2].charAt(1))],operatore); //allora confronto costante - variabile
+				e = new EspressioneConfronto(Costante.of(confronto[0]),var[Integer.parseInt(""+confronto[2].charAt(1))],operatore); //allora confronto costante - variabile
 			}
 			else {
 				e = new EspressioneConfronto(Costante.of(confronto[0]),Costante.of(confronto[2]),operatore); //allora confronto costante - variabile
@@ -164,16 +191,17 @@ public class Programma implements Iterable<Istruzione> {
 			
 		}
 		for(int i = 0;i<strThen.length;i++) {
-			istThen[i]=parse(strThen[i]);//RICORSIONE  per prendere tutte le istruzioni - no entrare qua dentro durante la ricorsione
+			istThen[i]=parse(strThen[i],var,label);//RICORSIONE  per prendere tutte le istruzioni - no entrare qua dentro durante la ricorsione
 		}
 		return new If(e,istThen);
 	}
+	
 	
 	@Override
 	public Iterator<Istruzione> iterator() {
 		
 		return new Iterator<>(){
-			private int k;
+			public int k;
 
 			@Override
 			public boolean hasNext() {
@@ -185,6 +213,9 @@ public class Programma implements Iterable<Istruzione> {
 				return hasNext()? istruzioni.get(k++):null;
 			}	
 		};
+	}
+	public ArrayList<Istruzione> getIstruzioni() {
+		return istruzioni;
 	}
 	
 }

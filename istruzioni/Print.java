@@ -2,6 +2,7 @@ package istruzioni;
 
 import espressioni.Booleano;
 import espressioni.Espressione;
+import espressioni.Espressione.Tipo;
 import espressioni.Intero;
 import espressioni.Stringa;
 
@@ -22,7 +23,12 @@ public class Print implements Istruzione {
 	}
 
 	public void esegui() {
-		System.out.println(argomento.getValore());
+		if(argomento.getTipo()==Tipo.STRINGA) {
+			if((""+argomento.getValore()).charAt(0) == '"' && (""+argomento.getValore()).charAt((""+argomento.getValore()).length()-1) == '"' ) 
+				System.out.println(((""+argomento.getValore()).substring(1, (""+argomento.getValore()).length()-1)));
+			else System.out.println((argomento.getValore()));
+		}
+		else System.out.println((argomento.getValore()));
 	}
 
 

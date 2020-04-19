@@ -7,8 +7,7 @@ public class Salto implements Istruzione{
 	}
 	@Override
 	public void esegui() {
-		
-		
+		System.out.println(etichetta.getNome()+etichetta.getPosizione());
 	}
 	
 

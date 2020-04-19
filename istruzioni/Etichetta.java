@@ -11,6 +11,15 @@ public class Etichetta implements Istruzione{
 	@Override
 	public void esegui() {
 	}
+	public String getNome() {
+		return nome;
+	}
+	public void setPosizione(int pos) {
+		posizione = pos;
+	}
+	public int getPosizione() {
+		return posizione;
+	}
 	
 
 }
