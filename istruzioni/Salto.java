@@ -1,13 +1,19 @@
 package istruzioni;
 
+import it.uniroma1.metodologie.Programma;
+
 public class Salto implements Istruzione{
-	Etichetta etichetta;
+	public Etichetta etichetta;
+	public Programma programma;
 	public Salto(Etichetta etichetta) {
 		this.etichetta = etichetta;
+		this.programma = programma;
 	}
 	@Override
 	public void esegui() {
-		System.out.println(etichetta.getNome()+etichetta.getPosizione());
+		//programma.setGoTo(true);
+		//programma.setWhere(etichetta.getPosizione());
+
 	}
 	
 

@@ -40,7 +40,8 @@ public class Variabile extends Espressione {
 	public Variabile(Nome nome,String valore) {
 		super(valore);
 		this.nome = nome;
-		this.valore = valore;
+		if(valore.charAt(0) == '"' && valore.charAt(valore.length()-1) == '"') this.valore = valore.substring(1,valore.length()-1);
+		else this.valore = valore;
 		numeroVariabili++;
 	}
 	

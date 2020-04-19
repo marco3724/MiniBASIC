@@ -25,11 +25,13 @@ import istruzioni.*;
 import espressioni.Tipo;
 
 public class Programma implements Iterable<Istruzione> {//FERMA QUI
-	public ArrayList<Istruzione> istruzioni;
-	public Variabile[] variabili ;// il massimo delle variabili sara uguale al numero dei nomi e la loro posizione è dopo il $
-	public ArrayList<Etichetta> etichette ;
+	private ArrayList<Istruzione> istruzioni;
+	private Variabile[] variabili ;// il massimo delle variabili sara uguale al numero dei nomi e la loro posizione è dopo il $
+	private ArrayList<Etichetta> etichette ;
 	static int indice = 0;
-	
+	private boolean goTo = false;
+	private int where;
+	static ArrayList<Salto> s = new ArrayList<Salto>();
 	public Programma(Istruzione... istruzioni) {
 		this.istruzioni = new ArrayList<Istruzione>();
 		this.variabili = new Variabile[Variabile.getMaxVariabili()];
@@ -145,7 +147,7 @@ public class Programma implements Iterable<Istruzione> {//FERMA QUI
 		
 		String[] confronto = ifThen[0].substring(3).split(" ");// il confronto if(...)
 		If istruzioneIf = parseConfronto(confronto,strThen,var,label);
-		if(selezione.length==1) return new Selezione(istruzioneIf,null);
+		if(selezione.length==1) return new Selezione(istruzioneIf,new Etichetta("null",0));
 		String[] strElse =selezione[1].split(":");//else
 		Istruzione[] istElse = new Istruzione[strElse.length];
 		for(int i = 0;i<strElse.length;i++) {
@@ -156,14 +158,9 @@ public class Programma implements Iterable<Istruzione> {//FERMA QUI
 	
 	private static Iterazione parseWhileDo(String riga,Variabile[] var,ArrayList<Etichetta> label) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException {
 		String[] selezione =riga.split("DO",2);
-		System.out.println(selezione[0]+"  LOOOOL   "+selezione[1]);
 		String condizione = selezione[0].substring(6);//inizia direttamete dalla condizione
-		System.out.println(condizione);
 		String strIstruzione = selezione[1];//inizio direttamente dall'istruzioni
-		System.out.println(strIstruzione+"mac so");
-		System.out.println("ARRIVO QUA");
 		If istruzioneWhileDo =  parseConfronto(condizione.split(" "),strIstruzione.split(" : "), var,label);
-		System.out.println("ARRIVO QUAAA");
 		return new Iterazione(istruzioneWhileDo);
 	}
 	
@@ -200,26 +197,63 @@ public class Programma implements Iterable<Istruzione> {//FERMA QUI
 	@Override
 	public Iterator<Istruzione> iterator() {
 		
-		return new Iterator<>(){
-			public int k;
-
+		return new Iterator<Istruzione>() { 
+			private int k; 
+			
 			@Override
 			public boolean hasNext() {
 				return k<istruzioni.size();	
 			}
-
 			@Override
 			public Istruzione next() {
-				return hasNext()? istruzioni.get(k++):null;
-			}	
-		};
+				if(istruzioni.get(k) instanceof Salto)
+					k =((Salto) istruzioni.get(k)).etichetta.getPosizione();
+				return hasNext() ? istruzioni.get(k++):null;
+				
+			}
+	};
 	}
+	
 	public ArrayList<Istruzione> getIstruzioni() {
 		return istruzioni;
+	}public Variabile[] getVariabili() {
+		return variabili;
+	}
+	public ArrayList<Etichetta> getEtichette() {
+		return etichette;
+	}
+	public boolean getGoTo() {
+		return goTo;
+	}
+	public void setGoTo(boolean g) {
+		goTo = g;
+	}
+	public int getWhere() {
+		return where;
+	}
+	public void setWhere(int posizione) {
+		where = posizione;
 	}
 	
 }
 
+class Iteratore implements Iterator<Istruzione>{
+	private ArrayList<Istruzione> istruzioni;
+	private int k;
+	public Iteratore(ArrayList<Istruzione> istruzioni) {
+		this.istruzioni = istruzioni;
+	}
+	@Override
+	public boolean hasNext() {
+		return k<istruzioni.size();
+	}
+
+	@Override
+	public Istruzione next() {
+		return hasNext() ? istruzioni.get(k):null;
+	}
+	
+}
 
 
 
