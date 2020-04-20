@@ -29,9 +29,8 @@ public class Programma implements Iterable<Istruzione> {//FERMA QUI
 	private Variabile[] variabili ;// il massimo delle variabili sara uguale al numero dei nomi e la loro posizione è dopo il $
 	private ArrayList<Etichetta> etichette ;
 	static int indice = 0;
-	private boolean goTo = false;
-	private int where;
-	static ArrayList<Salto> s = new ArrayList<Salto>();
+	Termine terminato;
+
 	public Programma(Istruzione... istruzioni) {
 		this.istruzioni = new ArrayList<Istruzione>();
 		this.variabili = new Variabile[Variabile.getMaxVariabili()];
@@ -59,10 +58,12 @@ public class Programma implements Iterable<Istruzione> {//FERMA QUI
 		String riga ;
 		ArrayList<Istruzione> ist = new ArrayList<Istruzione>();
 		ArrayList<Etichetta> label = new ArrayList<Etichetta>();
+		//label.add(new Etichetta("END",0));
 		Variabile[] var = new Variabile[Variabile.getMaxVariabili()];
 		try (BufferedReader b =Files.newBufferedReader(Paths.get(f))){
 			while(b.ready()) {
 				riga = b.readLine();
+				if(riga.equals("")) continue;
 				ist.add(parse(riga,var,label));
 				indice++;
 			}	
@@ -70,7 +71,9 @@ public class Programma implements Iterable<Istruzione> {//FERMA QUI
 		catch(IOException e) {
 			System.out.println(e);
 		}
-		
+		//label.get(0).setPosizione(ist.size());
+		//System.out.println(label.get(0).getPosizione());
+		//ist.add(label.get(0));//cosi non sfora
 		return new Programma(var,ist,label);
 		}
 	
@@ -112,19 +115,7 @@ public class Programma implements Iterable<Istruzione> {//FERMA QUI
 	
 	private static Assegna parseAssegna(String argomento,String istruzione,Variabile[] var) throws TipiIncopamtibiliException {
 		String[] valore = argomento.split(" ",2);
-		if(!(valore[1].contains(" + ")) ) {
-			if(valore[1].startsWith("$")) {
-				if(var[Integer.parseInt(""+valore[1].charAt(1))]== null) var[Integer.parseInt(""+valore[1].charAt(1))] = new Variabile(Variabile.Nome.valueOf(valore[1]),"");        
-				return new Assegna(var[Integer.parseInt(""+istruzione.charAt(1))],var[Integer.parseInt(""+valore[1].charAt(1))]);
-				}
-			else var[Integer.parseInt(""+istruzione.charAt(1))] = new Variabile(Variabile.Nome.valueOf(istruzione),valore[1]);//variabile da essere assegnato
-			return new Assegna(var[Integer.parseInt(""+istruzione.charAt(1))],valore[1]);
-			
-		}
-		
-		//System.out.println(valore[1]+"HUAAAYYY");
 		String[] concatenazione = valore[1].split(" [+] ");
-		//System.out.println(concatenazione[1]+"HUAAxdAYYY");
 		Espressione[] valori = new Espressione[concatenazione.length];
 		int i = 0;
 		for(String v: concatenazione) 
@@ -207,55 +198,13 @@ public class Programma implements Iterable<Istruzione> {//FERMA QUI
 			@Override
 			public Istruzione next() {
 				if(istruzioni.get(k) instanceof Salto)
-					k =((Salto) istruzioni.get(k)).etichetta.getPosizione();
+					k =((Salto) istruzioni.get(k)).getEtichetta().getPosizione();
 				return hasNext() ? istruzioni.get(k++):null;
 				
 			}
 	};
 	}
-	
-	public ArrayList<Istruzione> getIstruzioni() {
-		return istruzioni;
-	}public Variabile[] getVariabili() {
-		return variabili;
-	}
-	public ArrayList<Etichetta> getEtichette() {
-		return etichette;
-	}
-	public boolean getGoTo() {
-		return goTo;
-	}
-	public void setGoTo(boolean g) {
-		goTo = g;
-	}
-	public int getWhere() {
-		return where;
-	}
-	public void setWhere(int posizione) {
-		where = posizione;
-	}
-	
 }
-
-class Iteratore implements Iterator<Istruzione>{
-	private ArrayList<Istruzione> istruzioni;
-	private int k;
-	public Iteratore(ArrayList<Istruzione> istruzioni) {
-		this.istruzioni = istruzioni;
-	}
-	@Override
-	public boolean hasNext() {
-		return k<istruzioni.size();
-	}
-
-	@Override
-	public Istruzione next() {
-		return hasNext() ? istruzioni.get(k):null;
-	}
-	
-}
-
-
 
 
 

@@ -42,16 +42,11 @@ public class Assegna implements Istruzione {
 	 */
 	@Override
 	public void esegui()  {
-		try {
-		//System.out.println("riga 46 assegna ARGOMENTO"+argomento.getTipo());
 		variabile.setValore(""+argomento.getValore());
-		//System.out.println(variabile.getValore());
 		}
-		catch(TipiIncopamtibiliException e) {
-			System.out.println(e+" "+variabile+" "+argomento.getValore());
-		}
+
 	}
 
-}
+
 
 

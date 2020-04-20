@@ -66,21 +66,20 @@ public class Variabile extends Espressione {
 	 * assegna un nuovo valore alla variabile
 	 * @param valore è il nuovo valore della variabile che però deve essere compatibile con la vecchia variabile
 	 */
-	public void setValore(String valore) throws TipiIncopamtibiliException{
-		if(this.getTipo()!=super.returnTipo(valore)) throw new TipiIncopamtibiliException();
-		//System.out.println(valore+" prima");
+	public void setValore(String valore) {
+		
 		this.valore = valore;
-		//System.out.println(valore+" dopo VARIABILE 72");
+	
 		
 	}
-	public void setValore(int valore) throws TipiIncopamtibiliException {
+	public void setValore(int valore)  {
 		setValore(""+valore);
 		
 	}
-	public void setValore(boolean valore) throws TipiIncopamtibiliException{
+	public void setValore(boolean valore) {
 		setValore(""+valore);
 	}
-	public void setValore(Variabile valore) throws TipiIncopamtibiliException{
+	public void setValore(Variabile valore) {
 		setValore(""+valore.getValore());
 	}
 	/**

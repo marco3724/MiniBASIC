@@ -20,7 +20,7 @@ abstract public class Costante extends Espressione{
 	public static Costante of(String valore) {
 		return switch(returnTipo(valore)) {
 		case BOOLEANO -> new Booleano(Boolean.getBoolean(valore));
-		case STRINGA -> new Stringa(valore);
+		case STRINGA -> new Stringa(valore.substring(1,valore.length()-1));
 		case INTERO -> new Intero(Integer.parseInt(valore));
 		};
 	}
