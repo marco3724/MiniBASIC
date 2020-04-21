@@ -1,10 +1,13 @@
 package istruzioni;
 
 public class Termine implements Istruzione{
-
+	private boolean terminato = false;
 	@Override
 	public void esegui() {
-		//System.exit(1);
+		terminato = true;
+	}
+	public boolean getTermine() {
+		return terminato;
 	}
 
 	

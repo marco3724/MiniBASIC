@@ -1,5 +1,6 @@
 package espressioni;
 
+import eccezioni.NumeroMassimoVariabiliSuperatoException;
 import eccezioni.TipiIncopamtibiliException;
 import espressioni.Espressione.Tipo;
 /**
@@ -36,20 +37,22 @@ public class Variabile extends Espressione {
 	 * incrementa il contatore del numero delle variabili create
 	 * @param nome = nome della variabile
 	 * @param valore = valore della variabile
+	 * @throws NumeroMassimoVariabiliSuperatoException 
 	 */
-	public Variabile(Nome nome,String valore) {
+	public Variabile(Nome nome,String valore) throws NumeroMassimoVariabiliSuperatoException {
 		super(valore);
+		if(numeroVariabili>=maxVariabili) throw new NumeroMassimoVariabiliSuperatoException(maxVariabili);
 		this.nome = nome;
 		if(valore.charAt(0) == '"' && valore.charAt(valore.length()-1) == '"') this.valore = valore.substring(1,valore.length()-1);
 		else this.valore = valore;
 		numeroVariabili++;
 	}
 	
-	public Variabile(Nome nome,int valore) {
+	public Variabile(Nome nome,int valore) throws NumeroMassimoVariabiliSuperatoException {
 		this(nome,""+valore);
 	}
 	
-	public Variabile(Nome nome,boolean valore) {
+	public Variabile(Nome nome,boolean valore) throws NumeroMassimoVariabiliSuperatoException {
 		this(nome,""+valore);
 	}
 	public Variabile(Nome nome,Tipo tipo) {

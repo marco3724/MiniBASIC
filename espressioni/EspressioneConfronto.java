@@ -30,10 +30,10 @@ public class EspressioneConfronto extends EspressioneComposta {
 		private Operatore(String simbolo) {
 			this.simbolo = simbolo;
 		}
-		public static Operatore getOperatore(String simbolo) throws OperatoreNonTrovatoException {
+		public static Operatore getOperatore(String simbolo) throws OperatoreNonTrovatoException  {
 			for(Operatore op : Operatore.values()) 
 				if(op.simbolo.equals(simbolo)) return op;
-			 return null;
+			 throw new OperatoreNonTrovatoException(simbolo);
 			
 			
 		}
