@@ -3,7 +3,9 @@ package espressioni;
 import eccezioni.TipiIncopamtibiliException;
 import espressioni.Espressione.Tipo;
 /**
- * classe dedicata alla somma di espressioni
+ * classe che definisce la somma fra espressioni
+ * non ha un campo valore perche viene sempre calcolato da un metodo in quanto 
+ * se sono presenti variabili,deve cambiare di conseguenza al variare delle variabili
  * @author marco
  *
  */
@@ -11,7 +13,7 @@ public class EspressioneSomma extends EspressioneComposta{
 	/**
 	 * valore della somma/concatenazione
 	 */
-	private String valore;
+
 	/**
 	 * dopo aver create l'espressione col super costruttore li sommo/concateno
 	 * @param espressione insieme di espressioni da sommare
@@ -20,7 +22,7 @@ public class EspressioneSomma extends EspressioneComposta{
 	public EspressioneSomma(Espressione... espressione) throws TipiIncopamtibiliException {
 		super(espressione);
 		//System.out.println(espressione[0].getValore()+"VARIABILE espressioneSomma "+espressione[0]);
-		valore = somma();
+
 	}
 	/**
 	 * somma in base al tipo

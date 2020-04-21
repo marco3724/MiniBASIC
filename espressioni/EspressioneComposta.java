@@ -4,6 +4,7 @@ import eccezioni.TipiIncopamtibiliException;
 import espressioni.Espressione.Tipo;
 /**
  * superclasse di EspressioneConfronto e EspressioneSomma 
+ * questa classe definisce un espresseione composta da piu espressioni
  * @author uni
  *
  */
@@ -24,6 +25,7 @@ abstract public class EspressioneComposta extends Espressione{
 		if(!sonoDelloStessoTipo(e1)) throw new TipiIncopamtibiliException();
 		espressione = e1;
 	}
+	
 	public EspressioneComposta(Tipo tipo,Espressione... e1) throws TipiIncopamtibiliException{
 		super(tipo);
 		if(!sonoDelloStessoTipo(e1)) throw new TipiIncopamtibiliException();

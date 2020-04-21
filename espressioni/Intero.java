@@ -1,7 +1,11 @@
 package espressioni;
 
 import espressioni.Espressione.Tipo;
-
+/**
+ * classe che definisce gli interi
+ * @author marco
+ *
+ */
 public class Intero extends Costante{
 	/**
 	 * valore della costante 

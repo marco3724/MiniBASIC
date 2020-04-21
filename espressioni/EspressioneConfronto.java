@@ -4,15 +4,14 @@ import eccezioni.OperatoreNonTrovatoException;
 import eccezioni.TipiIncopamtibiliException;
 
 /**
- * questa classe serve a un oggetto che cotiene il confronto fra due espressioni
+ * questa classe definisce un espressione con valore booleano derivato da due confronti, 
+ * non ha un campo valore perche viene sempre calcolato da un metodo in quanto 
+ * se sono presenti variabili,deve cambiare di conseguenza al variare delle variabili
  * @author marco
  *
  */
 public class EspressioneConfronto extends EspressioneComposta {
-	/**
-	 * valore di tipo booleano derivato da due confronti
-	 */
-	private boolean valore;
+
 	
 	/**
 	 * operatore fra due espressioni
@@ -48,7 +47,7 @@ public class EspressioneConfronto extends EspressioneComposta {
 	public EspressioneConfronto(Espressione e1,Espressione e2,Operatore op) throws TipiIncopamtibiliException {
 		super(Tipo.BOOLEANO,e1,e2);
 		this.op = op;
-		valore = Confronto();
+		
 	}
 	/**
 	 * 
@@ -61,7 +60,7 @@ public class EspressioneConfronto extends EspressioneComposta {
 				t = switch(this.op) {
 					case UGUALE->super.getEspressione()[0].getValore().equals(super.getEspressione()[1].getValore() );
 					case DIVERSO -> !(super.getEspressione()[0].getValore().equals(super.getEspressione()[1].getValore() ));
-					default -> throw new IllegalArgumentException("Unexpected value: " + this.op);
+					default -> throw new IllegalArgumentException("operatore non valido per questo tipo di espressione: " + this.op);
 				};
 			case INTERO->
 				t = switch(this.op) {
@@ -76,12 +75,12 @@ public class EspressioneConfronto extends EspressioneComposta {
 				t = switch(this.op) {
 				case UGUALE->super.getEspressione()[0].getValore().equals(super.getEspressione()[1].getValore() );
 				case DIVERSO -> !(super.getEspressione()[0].getValore().equals(super.getEspressione()[1].getValore() ));
-				default -> throw new IllegalArgumentException("Unexpected value: " + this.op);
+				default -> throw new IllegalArgumentException("operatore non valido per questo tipo di espressione: " + this.op);
 				};	
 		};	
 	}
 	/**
-	 * @return ritorna il valore(booleano)
+	 * @return ritorna il valore(booleano) del confronto
 	 */
 	@Override
 	public Object getValore() {

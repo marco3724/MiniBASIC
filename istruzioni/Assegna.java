@@ -1,6 +1,6 @@
 package istruzioni;
 
-import eccezioni.TipiIncopamtibiliException;
+
 import espressioni.Costante;
 import espressioni.Espressione;
 import espressioni.Variabile;

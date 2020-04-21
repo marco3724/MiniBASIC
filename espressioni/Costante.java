@@ -1,6 +1,6 @@
 package espressioni;
 /**
- * questa classe serve a instanziare un valore immutabile
+ * questa classe serve a instanziare un valore immutabile, infatti non ha un metodo setCostante
  * @author uni
  *
  */
@@ -13,7 +13,8 @@ abstract public class Costante extends Espressione{
 		super(tipo);
 	}
 	/**
-	 * 
+	 * crea un instanza di una costante
+	 * se è una strimga togliera le parentesi
 	 * @param valore della costante
 	 * @return ritorna un'instanza di una sottoclasse di costante (Intero,Stringa,Booleano)
 	 */

@@ -1,7 +1,11 @@
 package espressioni;
 
 import espressioni.Espressione.Tipo;
-
+/**
+ * classe che denifinisce un booleano
+ * @author marco
+ *
+ */
 public class Booleano extends Costante{
 	/**
 	 * valore della costante

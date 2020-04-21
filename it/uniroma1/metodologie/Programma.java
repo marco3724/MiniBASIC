@@ -19,18 +19,28 @@ import espressioni.EspressioneConfronto;
 import espressioni.EspressioneSomma;
 import espressioni.Intero;
 import espressioni.Stringa;
-import espressioni.Tipo;
 import espressioni.Variabile;
 import espressioni.Variabile.Nome;
 import istruzioni.*;
-import espressioni.Tipo;
 
-public class Programma implements Iterable<Istruzione> {//FERMA QUI
+/**
+ * crea un oggetto di tipo programma
+ * puo essere instanziato da un file di testo oppure pssare le istruzione col metodo of
+ * ha i metodi per estrarre le istruzioni da un programma
+ * 
+ * @author marco
+ *
+ */
+public class Programma implements Iterable<Istruzione> {
 	private ArrayList<Istruzione> istruzioni;
 	private Variabile[] variabili ;// il massimo delle variabili sara uguale al numero dei nomi e la loro posizione è dopo il $
 	private ArrayList<Etichetta> etichette ;
 	private Termine terminato;
-
+	/**
+	 * per costruire un programma con le istruzioni
+	 * 
+	 * @param istruzioni
+	 */
 	public Programma(Istruzione... istruzioni) {
 		this.istruzioni = new ArrayList<Istruzione>();
 		this.variabili = new Variabile[Variabile.getMaxVariabili()];
@@ -151,7 +161,7 @@ public class Programma implements Iterable<Istruzione> {//FERMA QUI
 		String[] strElse =selezione[1].split(":");//else
 		Istruzione[] istElse = new Istruzione[strElse.length];
 		for(int i = 0;i<strElse.length;i++) {
-			istElse[i]=parse(strElse[i],var,label,termine,indice);//RICORSIONE  per prendere tutte le istruzioni - non dovrebbe entrare qua dentro durante la ricorsione
+			istElse[i]=parse(strElse[i],var,label,termine,indice);//prende tutte le istruzioni - non dovrebbe rientrare qua
 		}
 		return new Selezione(istruzioneIf,istElse);
 	}
@@ -194,17 +204,24 @@ public class Programma implements Iterable<Istruzione> {//FERMA QUI
 			}
 		}
 	}
-	
+	/**
+	 * iteratore che itera le istruzioni di un programma, il coros della sua iterazione puo venire modifcato da un istruzione di salto o di termine
+	 */
 	@Override
 	public Iterator<Istruzione> iterator() {
 		
 		return new Iterator<Istruzione>() { 
 			private int k; 
-			
+			/**
+			 * controlla se ha il prossimo
+			 */
 			@Override
 			public boolean hasNext() {
 				return k<istruzioni.size();	
 			}
+			/**
+			 * esegue la prossima istruzione
+			 */
 			@Override
 			public Istruzione next() {
 				if(istruzioni.get(k) instanceof Salto) 
@@ -215,6 +232,8 @@ public class Programma implements Iterable<Istruzione> {//FERMA QUI
 			}
 	};
 	}
+	/**
+	 * 
 	public ArrayList<Istruzione> getIstruzioni() {
 		return istruzioni;
 	}public Variabile[] getVariabili() {
@@ -222,7 +241,7 @@ public class Programma implements Iterable<Istruzione> {//FERMA QUI
 	}
 	public ArrayList<Etichetta> getEtichette() {
 		return etichette;
-	}
+	}*/
 }
 
 

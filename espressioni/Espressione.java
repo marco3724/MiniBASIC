@@ -1,5 +1,7 @@
 package espressioni;
 import java.lang.NumberFormatException;
+
+
 /**
  * superclasse di variabile,costante,espressione composta
  * definisce solo un campo : il tipo
@@ -61,7 +63,12 @@ abstract public class Espressione {
 	 * @return il tipo dell'oggetto
 	 */
 	public Tipo getTipo() {return tipo;}
-	public abstract Object getValore();
+	/**
+	 * restituisce un valore
+	 * @return il valore di un'espressione che verrà downcastata per essere utilizzata
+	 * 
+	 */
+	public abstract Object getValore() ;
 	
 
 }

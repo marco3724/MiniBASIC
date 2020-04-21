@@ -55,6 +55,11 @@ public class Variabile extends Espressione {
 	public Variabile(Nome nome,boolean valore) throws NumeroMassimoVariabiliSuperatoException {
 		this(nome,""+valore);
 	}
+	/**
+	 * serve ad inzializzare la variabile in base al tipo
+	 * @param nome
+	 * @param tipo
+	 */
 	public Variabile(Nome nome,Tipo tipo) {
 		super(tipo);
 		this.valore = switch(tipo) {
@@ -104,9 +109,8 @@ public class Variabile extends Espressione {
 	 * @return resituisce il numero di variabili create
 	 */
 	public static int getNumeroVariabili() {return numeroVariabili;}
+	
 	@Override
-	public String toString(){
-		return super.toString()+"  "+this.nome+"";
-	}
+	public String toString(){ return super.toString()+"  "+this.nome+"";}
 
 }
