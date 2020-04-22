@@ -37,7 +37,7 @@ public class Variabile extends Espressione {
 	 * incrementa il contatore del numero delle variabili create
 	 * @param nome = nome della variabile
 	 * @param valore = valore della variabile
-	 * @throws NumeroMassimoVariabiliSuperatoException 
+	 * @throws NumeroMassimoVariabiliSuperatoException se si creano troppe variabili verrà lanciata questa eccezione
 	 */
 	public Variabile(Nome nome,String valore) throws NumeroMassimoVariabiliSuperatoException {
 		super(valore);

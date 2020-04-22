@@ -8,7 +8,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-
+import eccezioni.IstruzioneNonRiconosciutaException;
 import eccezioni.OperatoreNonTrovatoException;
 import eccezioni.TipiIncopamtibiliException;
 import eccezioni.VariabileNonInizializzataException;
@@ -16,6 +16,7 @@ import espressioni.Booleano;
 import espressioni.Costante;
 import espressioni.Espressione;
 import espressioni.EspressioneConfronto;
+import espressioni.EspressioneConfronto.Operatore;
 import espressioni.EspressioneSomma;
 import espressioni.Intero;
 import espressioni.Stringa;
@@ -39,7 +40,7 @@ public class Programma implements Iterable<Istruzione> {
 	/**
 	 * per costruire un programma con le istruzioni
 	 * 
-	 * @param istruzioni
+	 * @param istruzioni istruzioni che compongono il programma
 	 */
 	public Programma(Istruzione... istruzioni) {
 		this.istruzioni = new ArrayList<Istruzione>();
@@ -49,7 +50,7 @@ public class Programma implements Iterable<Istruzione> {
 			this.istruzioni.add(i);		
 	}
 	
-	public Programma(Variabile[] var,ArrayList<Istruzione> istruzioni,ArrayList<Etichetta> label,Termine termine ) {
+	private Programma(Variabile[] var,ArrayList<Istruzione> istruzioni,ArrayList<Etichetta> label,Termine termine ) {
 		this.istruzioni = new ArrayList<Istruzione>();
 		for(Istruzione i: istruzioni) 
 			this.istruzioni.add(i);
@@ -57,22 +58,37 @@ public class Programma implements Iterable<Istruzione> {
 		etichette = label;
 		terminato = termine;
 	}
-	
+	/**
+	 * crea un oggetto da un arraylist di istruzioni
+	 * @param istruzioni le istruzioni per creare un programma
+	 */
 	public Programma(ArrayList<Istruzione> istruzioni) {
 		this.istruzioni = istruzioni;
 	}
-	
+	/**
+	 * crea un programma dalle istruzioni date in input
+	 * @param istruzioni istruzioni che compongono il programma
+	 * @return ritorna un programma
+	 */
 	public static Programma of(Istruzione... istruzioni) {
 		return new Programma(istruzioni);
 	}
-	
-	static public Programma fromFile(String f) throws NumberFormatException, OperatoreNonTrovatoException, TipiIncopamtibiliException, VariabileNonInizializzataException {
+	/**
+	 * crea un programma a partire da un file
+	 * 
+	 * @param f il file da dare in input
+	 * @return un oggetto di tipo Programma
+	 * @throws OperatoreNonTrovatoException lancia questo errore se non riconosce un operatore
+	 * @throws TipiIncopamtibiliException lancia questo errore se i tipi da concatenare non son compatibili
+	 * @throws VariabileNonInizializzataException se si vuole e una non è stata inizializzata
+	 * @throws IstruzioneNonRiconosciutaException lancia questo errore se non riconosce l'istruzione
+	 */
+	static public Programma fromFile(String f) throws  OperatoreNonTrovatoException, TipiIncopamtibiliException, VariabileNonInizializzataException, IstruzioneNonRiconosciutaException {
 		String riga ;
 		ArrayList<Istruzione> ist = new ArrayList<Istruzione>();
 		ArrayList<Etichetta> label = new ArrayList<Etichetta>();
 		int indice = 0;
 		Termine termine = new Termine();
-		//label.add(new Etichetta("END",0));
 		Variabile[] var = new Variabile[Variabile.getMaxVariabili()];
 		try (BufferedReader b =Files.newBufferedReader(Paths.get(f))){
 			while(b.ready()) {
@@ -85,14 +101,13 @@ public class Programma implements Iterable<Istruzione> {
 		catch(IOException e) {
 			System.out.println(e);
 		}
-		//label.get(0).setPosizione(ist.size());
-		//System.out.println(label.get(0).getPosizione());
-		ist.add(new Etichetta("programmafintoflag",0));
+	
+		ist.add(new Etichetta("programmaFintoFlag",0));
 		return new Programma(var,ist,label,termine);
 		}
 	
 	
-	private static Istruzione parse(String riga,Variabile[] var,ArrayList<Etichetta> label,Termine termine,int indice ) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException, VariabileNonInizializzataException {
+	private static Istruzione parse(String riga,Variabile[] var,ArrayList<Etichetta> label,Termine termine,int indice ) throws OperatoreNonTrovatoException, TipiIncopamtibiliException, VariabileNonInizializzataException, IstruzioneNonRiconosciutaException {
 		riga = riga.trim();
 		String istruzione = riga.split(" ")[0];
 		String argomento = "";
@@ -104,13 +119,13 @@ public class Programma implements Iterable<Istruzione> {
 			case "REM": return new Commento(argomento);
 			case "IF":  return parseSelezione(riga,var,label,termine,indice);
 			case "WHILE": return parseWhileDo(riga,var,label,termine,indice);
-			case "GOTO"	:return new Salto(label.get(trovaEtichetta(argomento,label)));// ho un salto alla posizione dell'etichetta nelle etichette che pero non ha ancora un posizione
+			case "GOTO"	:return new Salto(label.get(trovaEtichetta(argomento,label)));
 			case "END"	: return termine;
 			default:
 				if(istruzione.startsWith("$")) return  parseAssegna(argomento, istruzione,var);
-				if(istruzione.endsWith(":")) return creaEtichette(istruzione.substring(0, istruzione.length()-1),label,indice);//senza -1 cosi ho direttamente l'istruzione successive
+				if(istruzione.endsWith(":")) return creaEtichette(istruzione.substring(0, istruzione.length()-1),label,indice);
 		}
-		return null;
+		throw new IstruzioneNonRiconosciutaException(istruzione);
 	}
 	private static Etichetta creaEtichette(String etichetta,ArrayList<Etichetta> label,int indice) {
 		if(label.get(trovaEtichetta(etichetta,label)).getPosizione() == -1) label.get(trovaEtichetta(etichetta,label)).setPosizione(indice+1);
@@ -130,8 +145,7 @@ public class Programma implements Iterable<Istruzione> {
 		Espressione[] valori = concatena(argomento, var) ;
 		EspressioneSomma es = new EspressioneSomma(valori);
 		if(var[Integer.parseInt(""+istruzione.charAt(1))]== null) 
-			var[Integer.parseInt(""+istruzione.charAt(1))] = new Variabile(Variabile.Nome.valueOf(istruzione),es.getTipo()); //variabile da essere assegnato NON DEVE ESSRE ECREATO
-		//System.out.println(es+"IL VALORE riga 109 programma");
+			var[Integer.parseInt(""+istruzione.charAt(1))] = new Variabile(Variabile.Nome.valueOf(istruzione),es.getTipo());
 		return new Assegna(var[Integer.parseInt(""+istruzione.charAt(1))],es);
 	}
 	private static Espressione[] concatena(String argomento,Variabile[] var) throws VariabileNonInizializzataException {
@@ -150,7 +164,7 @@ public class Programma implements Iterable<Istruzione> {
 		
 	}
 	
-	private static Selezione parseSelezione(String riga,Variabile[] var,ArrayList<Etichetta> label,Termine termine,int indice ) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException, VariabileNonInizializzataException {
+	private static Selezione parseSelezione(String riga,Variabile[] var,ArrayList<Etichetta> label,Termine termine,int indice ) throws OperatoreNonTrovatoException, TipiIncopamtibiliException, VariabileNonInizializzataException, IstruzioneNonRiconosciutaException {
 		String[] selezione =riga.split("ELSE",2);//if...else....
 		String[] ifThen =selezione[0].split("THEN",2);//if...then...
 		EspressioneConfronto e;// l'espressione di confronto if(e)
@@ -158,7 +172,7 @@ public class Programma implements Iterable<Istruzione> {
 		String[] confronto = ifThen[0].substring(3).split(" ");// il confronto if(...)
 		If istruzioneIf = parseConfronto(confronto,strThen,var,label,termine,indice);
 		if(selezione.length==1) return new Selezione(istruzioneIf,new Etichetta("null",0));
-		String[] strElse =selezione[1].split(":");//else
+		String[] strElse =selezione[1].split(" : ");//else
 		Istruzione[] istElse = new Istruzione[strElse.length];
 		for(int i = 0;i<strElse.length;i++) {
 			istElse[i]=parse(strElse[i],var,label,termine,indice);//prende tutte le istruzioni - non dovrebbe rientrare qua
@@ -166,7 +180,7 @@ public class Programma implements Iterable<Istruzione> {
 		return new Selezione(istruzioneIf,istElse);
 	}
 	
-	private static Iterazione parseWhileDo(String riga,Variabile[] var,ArrayList<Etichetta> label,Termine termine,int indice) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException, VariabileNonInizializzataException {
+	private static Iterazione parseWhileDo(String riga,Variabile[] var,ArrayList<Etichetta> label,Termine termine,int indice) throws OperatoreNonTrovatoException,TipiIncopamtibiliException, VariabileNonInizializzataException, IstruzioneNonRiconosciutaException {
 		String[] selezione =riga.split("DO",2);
 		String condizione = selezione[0].substring(6);//inizia direttamete dalla condizione
 		String strIstruzione = selezione[1];//inizio direttamente dall'istruzioni
@@ -174,7 +188,7 @@ public class Programma implements Iterable<Istruzione> {
 		return new Iterazione(istruzioneWhileDo);
 	}
 	
-	private static If parseConfronto(String[] confronto,String[] strThen,Variabile[] var,ArrayList<Etichetta> label,Termine termine,int indice ) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException, VariabileNonInizializzataException {
+	private static If parseConfronto(String[] confronto,String[] strThen,Variabile[] var,ArrayList<Etichetta> label,Termine termine,int indice ) throws OperatoreNonTrovatoException, TipiIncopamtibiliException, VariabileNonInizializzataException, IstruzioneNonRiconosciutaException {
 		Istruzione[] istThen = new Istruzione[strThen.length];//lista di istruzioni del Then
 		EspressioneConfronto e;// l'espressione di confronto if(e)
 		// espressione confronto
@@ -185,7 +199,7 @@ public class Programma implements Iterable<Istruzione> {
 		return new If(e,istThen);
 	}
 	
-	private static EspressioneConfronto parseEspressioneConfronto(String[] confronto,Variabile[] var) throws OperatoreNonTrovatoException, NumberFormatException, TipiIncopamtibiliException {
+	private static EspressioneConfronto parseEspressioneConfronto(String[] confronto,Variabile[] var) throws OperatoreNonTrovatoException,TipiIncopamtibiliException {
 		EspressioneConfronto.Operatore operatore = EspressioneConfronto.Operatore.getOperatore(confronto[1]);//operatore (><=..)
 		if(confronto[0].startsWith("$")) {//se è una variabile
 			if(confronto[2].startsWith("$")) { //se anche il scondo è una variabile
@@ -232,16 +246,6 @@ public class Programma implements Iterable<Istruzione> {
 			}
 	};
 	}
-	/**
-	 * 
-	public ArrayList<Istruzione> getIstruzioni() {
-		return istruzioni;
-	}public Variabile[] getVariabili() {
-		return variabili;
-	}
-	public ArrayList<Etichetta> getEtichette() {
-		return etichette;
-	}*/
 }
 
 

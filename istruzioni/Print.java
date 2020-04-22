@@ -14,28 +14,28 @@ public class Print implements Istruzione {
 	private Espressione argomento;
 	/**
 	 * stampera una stringa
-	 * @param e
+	 * @param e il valore di una stringa da stampare
 	 */
 	public Print(String e) {
 		this(new Stringa(e));
 	}
 	/**
 	 * stamperà un espressione
-	 * @param e
+	 * @param e il valore espressione da stamoare
 	 */
 	public Print(Espressione e) {
 		argomento = e;
 	}
 	/**
 	 * stamperà una intero
-	 * @param e
+	 * @param e un intero da stampare
 	 */
 	public Print(int e) {
 		this(new Intero(e));
 	}
 	/**
 	 * stamperà una booleano
-	 * @param e
+	 * @param e valore booleano da stampare
 	 */
 	public Print(boolean e) {
 		this(new Booleano(e));

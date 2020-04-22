@@ -21,7 +21,7 @@ public class Assegna implements Istruzione {
 	private Espressione argomento;
 	/**
 	 * 
-	 * @param variabile 
+	 * @param variabile nome della variabile da essere assegnato
 	 * @param argomento puo essere una variabile/costante di tipo booleano/Stringa /intero
 	 */
 	public Assegna(Variabile variabile,String argomento) {

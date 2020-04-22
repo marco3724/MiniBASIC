@@ -9,7 +9,7 @@ public class Etichetta implements Istruzione{
 	private int posizione;
 	/**
 	 * costruttore di Etichetta
-	 * @param nome
+	 * @param nome nome della etichetta
 	 * @param posizione della prossima istruzione
 	 */
 	public Etichetta(String nome,int posizione) 
