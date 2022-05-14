@@ -79,6 +79,6 @@ END
 
 ### Testing with the `Test` Class
 
-The `Test` class is provided to demonstrate how the `MiniBASIC` interpreter can be used to execute various scripts. The class loads several example programs from the `prg` directory and executes them using the `MiniBASIC` interpreter.
+The `Test` class is provided to demonstrate how the `MiniBASIC` interpreter can be used to execute various scripts. The class loads several example programs and executes them using the `MiniBASIC` interpreter.
 
 example can be found in `it/uniroma1/metodologie/Test.java` and `it/uniroma1/metodologie/MiniBASICTest.java`
